@@ -1,0 +1,1479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jobescape Test Assignment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: a dark blue "stage" opens with the logo and name, then shrinks into a rounded card as you scroll; the assignment follows as a clean white Jobescape-style page with one column of reading and wide tables/charts. */
+:root{
+  --bg:#FFFFFF;
+  --bg-2:#F4F7FE;
+  --card:#FFFFFF;
+  --ink:#0B1A3A;
+  --ink-2:#3A4866;
+  --muted:#6A7794;
+  --line:#E1E7F4;
+  --blue:#2B62EA;
+  --blue-2:#5C8DF1;
+  --blue-soft:#EAF0FE;
+  --blue-ink:#1D4FD0;
+  --ok:#0F8A59; --ok-soft:#E2F5EC;
+  --part:#A86400; --part-soft:#FFF2D9;
+  --no:#C83434; --no-soft:#FCE7E7;
+  --hero-a:#060D24; --hero-b:#0F2766; --hero-c:#2B62EA;
+  --shadow:0 1px 2px rgba(15,35,90,.05), 0 12px 32px -12px rgba(15,35,90,.16);
+  --f-display:"Bricolage Grotesque","Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r-lg:28px; --r-md:18px; --r-sm:12px;
+  --nav-h:60px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#070C1C; --bg-2:#0C142C; --card:#0F1833;
+    --ink:#E8EEFC; --ink-2:#B9C4DF; --muted:#8693B2; --line:#1E2948;
+    --blue:#6F9BFF; --blue-2:#93B4FF; --blue-soft:#13204A; --blue-ink:#A9C3FF;
+    --ok:#43CC91; --ok-soft:#0E2C22; --part:#F2B54E; --part-soft:#2F240E; --no:#FF7B7B; --no-soft:#361617;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#070C1C; --bg-2:#0C142C; --card:#0F1833;
+  --ink:#E8EEFC; --ink-2:#B9C4DF; --muted:#8693B2; --line:#1E2948;
+  --blue:#6F9BFF; --blue-2:#93B4FF; --blue-soft:#13204A; --blue-ink:#A9C3FF;
+  --ok:#43CC91; --ok-soft:#0E2C22; --part:#F2B54E; --part-soft:#2F240E; --no:#FF7B7B; --no-soft:#361617;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--blue-ink)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:6px}
+strong,b{font-weight:700;color:var(--ink)}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.02em;line-height:1.08}
+p{margin:0}
+
+/* ---------- Intro stage ---------- */
+.intro{position:relative;height:140vh;height:140svh}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.panel{
+  position:absolute;inset:0;
+  --p:0;
+  transform:scale(calc(1 - var(--p) * .085));
+  border-radius:calc(var(--p) * 40px);
+  background:
+    radial-gradient(120% 90% at 50% 120%, var(--hero-c) 0%, transparent 55%),
+    linear-gradient(170deg, var(--hero-a) 0%, var(--hero-b) 100%);
+  overflow:hidden;color:#fff;
+  box-shadow:0 40px 80px -30px rgba(10,30,90,calc(var(--p) * .55));
+  will-change:transform;
+}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;pointer-events:none}
+.o1{width:46vmax;height:46vmax;left:-14vmax;top:-18vmax;background:radial-gradient(circle,#3D74FF 0%,transparent 65%);animation:drift1 22s ease-in-out infinite alternate}
+.o2{width:40vmax;height:40vmax;right:-12vmax;top:10vh;background:radial-gradient(circle,#5C8DF1 0%,transparent 62%);opacity:.38;animation:drift2 26s ease-in-out infinite alternate}
+.o3{width:36vmax;height:36vmax;left:30%;bottom:-24vmax;background:radial-gradient(circle,#8FB0FF 0%,transparent 60%);opacity:.3;animation:drift1 30s ease-in-out infinite alternate-reverse}
+@keyframes drift1{to{transform:translate(8vmax,6vmax) scale(1.1)}}
+@keyframes drift2{to{transform:translate(-6vmax,8vmax) scale(.92)}}
+.gridlines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(70% 60% at 50% 45%,#000 0%,transparent 75%);-webkit-mask-image:radial-gradient(70% 60% at 50% 45%,#000 0%,transparent 75%)}
+
+.intro-content{
+  position:relative;z-index:2;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding-inline:20px;gap:22px;
+  opacity:calc(1 - var(--p) * .35);
+  transform:translateY(calc(var(--p) * -24px)) scale(calc(1 - var(--p) * .05));
+}
+.intro-content.wait{visibility:hidden;animation:unwait 0s linear 2.5s forwards}
+@keyframes unwait{to{visibility:visible}}
+@media (prefers-reduced-motion: reduce){.intro-content.wait{visibility:visible}}
+.lockup{display:flex;align-items:center;justify-content:center;transform-origin:50% 50%}
+.jtile{position:relative;flex:none;width:clamp(64px,7.4vw,88px);aspect-ratio:1;border-radius:24%;background:linear-gradient(180deg,#5A8BF0 0%,#2864EB 100%);box-shadow:0 18px 44px -12px rgba(43,98,234,.8),inset 0 0 0 1px rgba(255,255,255,.16)}
+.jtile svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.jtile path{fill:#fff;transform-box:view-box;transform-origin:256px 256px}
+.wm-wrap{overflow:hidden;display:block}
+.wm{display:block;white-space:nowrap;padding-left:.3em;padding-right:.04em;font-family:var(--f-display);font-weight:700;font-size:clamp(2.3rem,5.2vw,3.7rem);letter-spacing:-.04em;line-height:1.15;color:#fff}
+.wm .wl{display:inline-block}
+.hero-role{font-family:var(--f-mono);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:#B9CCFF;display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border:1px solid rgba(160,190,255,.28);border-radius:999px;background:rgba(255,255,255,.05);backdrop-filter:blur(6px)}
+.hero-role .dot{width:7px;height:7px;border-radius:50%;background:#7CF0B4;box-shadow:0 0 10px #7CF0B4}
+.hero-name{font-size:clamp(2.8rem,10vw,7.4rem);font-weight:700;letter-spacing:-.045em;line-height:.95;color:#fff;display:flex;flex-wrap:wrap;justify-content:center;column-gap:.22em}
+.hero-name .mask{display:inline-block;overflow:hidden;padding:.04em .02em .1em;margin-bottom:-.06em}
+.hero-name .wd{display:inline-block}
+.hero-parts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.hero-parts a{font-size:.82rem;font-weight:600;color:#E3EBFF;text-decoration:none;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);transition:background .2s}
+.hero-parts a:hover{background:rgba(255,255,255,.16)}
+.hero-parts a b{color:#8FB2FF;margin-right:6px;font-family:var(--f-mono)}
+.replay{position:absolute;z-index:3;right:20px;bottom:28px;font:600 .78rem var(--f-body);color:#AFC2EE;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 14px;cursor:pointer;opacity:calc(1 - var(--p) * 2.5);transition:background .2s}
+.replay:hover{background:rgba(255,255,255,.14)}
+@media (max-width:560px){.replay{bottom:auto;top:16px;right:16px}}
+.scroll-cue{position:absolute;z-index:3;left:50%;bottom:28px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:#AFC2EE;text-decoration:none;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-family:var(--f-mono);opacity:calc(1 - var(--p) * 2.5);}
+.scroll-cue .mouse{width:22px;height:34px;border:1.5px solid rgba(175,194,238,.6);border-radius:12px;position:relative}
+.scroll-cue .mouse::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:7px;margin-left:-1.5px;border-radius:2px;background:#AFC2EE;animation:wheel 1.8s ease-in-out infinite}
+@keyframes wheel{0%{opacity:0;transform:translateY(-3px)}40%{opacity:1}100%{opacity:0;transform:translateY(9px)}}
+
+/* ---------- Nav ---------- */
+.nav{position:fixed;left:0;right:0;top:0;z-index:50;padding-top:env(safe-area-inset-top,0px);transform:translateY(-110%);transition:transform .45s cubic-bezier(.2,.8,.2,1);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid var(--line)}
+.nav.show{transform:none}
+.nav-in{max-width:1180px;margin:0 auto;height:var(--nav-h);display:flex;align-items:center;gap:16px;padding-inline:20px}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-width:0}
+.nav-brand img{width:30px;height:30px;border-radius:8px;flex:none}
+.nav-brand span{font-weight:700;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-brand small{color:var(--muted);font-weight:500;margin-left:6px}
+.nav-links{display:flex;gap:4px;margin-left:auto}
+.nav-links a{font-size:.85rem;font-weight:600;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:999px;transition:background .2s,color .2s;white-space:nowrap}
+.nav-links a:hover{background:var(--bg-2)}
+.nav-links a.on{background:var(--blue-soft);color:var(--blue-ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.9rem;text-decoration:none;border-radius:999px;padding:10px 18px;transition:transform .2s,box-shadow .2s,background .2s;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 8px 20px -8px color-mix(in srgb,var(--blue) 70%,transparent)}
+:root[data-theme="dark"] .btn-primary{color:#06102A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-primary{color:#06102A}}
+.btn-primary:hover{transform:translateY(-1px)}
+.nav .btn{padding:8px 14px;font-size:.82rem}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--blue),var(--blue-2));width:0;transition:width .1s linear}
+@media (max-width:820px){.nav-links{display:none}.nav .btn{margin-left:auto}.nav-brand small{display:none}}
+
+/* ---------- Page ---------- */
+main{position:relative;z-index:1}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px}
+.narrow{max-width:760px}
+section.part{padding-block:clamp(72px,10vw,128px);scroll-margin-top:var(--nav-h)}
+section.part.alt{background:var(--bg-2)}
+.sec-head{display:grid;gap:20px;margin-bottom:clamp(36px,5vw,56px)}
+.tag{display:inline-flex;align-items:center;gap:10px;align-self:start;justify-self:start;font-weight:700;font-size:.85rem;color:var(--blue-ink);background:var(--blue-soft);padding:6px 14px 6px 6px;border-radius:999px}
+.tag .l{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-family:var(--f-mono);font-size:.8rem}
+:root[data-theme="dark"] .tag .l{color:#06102A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tag .l{color:#06102A}}
+h2.thesis{font-size:clamp(2rem,4.3vw,3.4rem);font-weight:700;max-width:22ch;letter-spacing:-.035em}
+h2.thesis em{font-style:normal;color:var(--blue)}
+.lead{font-size:clamp(1.05rem,1.5vw,1.2rem);color:var(--ink-2);max-width:62ch;line-height:1.65}
+.used{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.85rem;color:var(--muted)}
+.used span.k{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin-right:4px}
+.pill{display:inline-flex;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);font-weight:600;font-size:.82rem}
+
+.task{margin-top:clamp(56px,7vw,88px);display:grid;gap:14px;margin-bottom:28px}
+.task .k{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-ink)}
+.task h3{font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:700;max-width:28ch}
+.task p{color:var(--ink-2);max-width:66ch}
+h4.sub{font-size:1.15rem;font-weight:700;margin:44px 0 16px;letter-spacing:-.01em}
+.note{font-size:.88rem;color:var(--muted);margin-top:14px;max-width:70ch}
+
+/* Overview */
+.ov-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:980px){.ov-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.ov-grid{grid-template-columns:1fr}}
+.ov{display:flex;flex-direction:column;gap:14px;padding:24px;border-radius:var(--r-md);background:var(--card);border:1px solid var(--line);text-decoration:none;color:inherit;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s;min-width:0}
+.ov:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--blue) 35%,var(--line))}
+.ov .l{font-family:var(--f-mono);font-weight:600;color:var(--blue-ink);font-size:.8rem;letter-spacing:.1em}
+.ov h3{font-size:1.25rem;font-weight:700}
+.ov p{color:var(--ink-2);font-size:.95rem}
+.ov .go{margin-top:auto;font-weight:700;font-size:.85rem;color:var(--blue-ink)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+@media (max-width:860px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--card);padding:26px 24px;display:grid;gap:8px;align-content:start;min-width:0}
+.stat .n{font-family:var(--f-display);font-size:clamp(2.2rem,4vw,3.2rem);font-weight:700;letter-spacing:-.04em;line-height:1;color:var(--blue);font-variant-numeric:tabular-nums}
+.stat .t{font-weight:700;font-size:.98rem}
+.stat .d{color:var(--muted);font-size:.88rem;line-height:1.5}
+.stat.bad .n{color:var(--no)}
+
+/* Findings list */
+.findings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:8px}
+@media (max-width:860px){.findings{grid-template-columns:1fr}}
+.finding{border-top:2px solid var(--blue);padding-top:16px;display:grid;gap:8px;min-width:0}
+.finding b{font-size:1.02rem;line-height:1.35}
+.finding p{color:var(--ink-2);font-size:.95rem}
+
+/* Tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-md);background:var(--card);-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:.93rem;line-height:1.5}
+th,td{text-align:left;vertical-align:top;padding:14px 18px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+thead th{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--bg-2);white-space:nowrap}
+section.alt thead th{background:color-mix(in srgb,var(--bg-2) 60%,var(--card))}
+td:first-child{font-weight:700;color:var(--ink)}
+td{color:var(--ink-2)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.hl td{background:color-mix(in srgb,var(--no-soft) 70%,transparent)}
+tr.key td{background:var(--blue-soft)}
+tr.key td,tr.key td:first-child{color:var(--ink);font-weight:700}
+.t-wide{min-width:760px}
+.t-mid{min-width:620px}
+.big{font-family:var(--f-display);font-weight:700;font-size:1.25rem;color:var(--blue);letter-spacing:-.02em;white-space:nowrap}
+
+/* Chips */
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;line-height:1.3}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.chip.ok{color:var(--ok);background:var(--ok-soft)}
+.chip.part{color:var(--part);background:var(--part-soft)}
+.chip.no{color:var(--no);background:var(--no-soft)}
+.chip.info{color:var(--blue-ink);background:var(--blue-soft)}
+.res{display:grid;gap:6px;justify-items:start}
+.res small{color:var(--muted);font-size:.82rem}
+
+/* Segments */
+.share{display:flex;height:14px;border-radius:999px;overflow:hidden;gap:3px;margin-bottom:20px}
+.share i{display:block;height:100%;border-radius:999px}
+.s1{background:var(--blue)}.s2{background:var(--blue-2)}.s3{background:color-mix(in srgb,var(--blue-2) 55%,var(--line))}.s4{background:color-mix(in srgb,var(--blue-2) 30%,var(--line))}
+.segs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:1040px){.segs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.segs{grid-template-columns:1fr}}
+.seg{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.seg-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.seg .pct{font-family:var(--f-display);font-weight:700;font-size:2.4rem;letter-spacing:-.04em;line-height:1;color:var(--blue)}
+.seg .sw{width:12px;height:12px;border-radius:4px;flex:none}
+.seg h4{font-size:1.15rem;font-weight:700;line-height:1.2}
+.seg dl{margin:0;display:grid;gap:12px}
+.seg dt{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.seg dd{margin:0;font-size:.9rem;color:var(--ink-2);line-height:1.5}
+.seg.focus{border-color:color-mix(in srgb,var(--blue) 45%,var(--line));box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 12%,transparent)}
+.seg .focus-tag{align-self:flex-start;font-size:.72rem;font-weight:700;color:var(--blue-ink);background:var(--blue-soft);padding:3px 9px;border-radius:999px}
+
+/* Callouts */
+.callout{border-radius:var(--r-lg);padding:clamp(26px,4vw,44px);background:linear-gradient(150deg,var(--hero-a),var(--hero-b));color:#E6EDFF;position:relative;overflow:hidden;margin-top:48px}
+.callout::after{content:"";position:absolute;width:420px;height:420px;right:-140px;top:-180px;border-radius:50%;background:radial-gradient(circle,rgba(92,141,241,.55),transparent 65%);pointer-events:none}
+.callout .k{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:#9FB8F5;position:relative}
+.callout blockquote{margin:14px 0 0;font-family:var(--f-display);font-size:clamp(1.35rem,2.6vw,2rem);font-weight:600;line-height:1.25;letter-spacing:-.02em;color:#fff;max-width:36ch;position:relative}
+.callout p{position:relative;margin-top:16px;max-width:68ch;color:#C9D6F5}
+.callout b{color:#fff}
+.means{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:28px}
+@media (max-width:860px){.means{grid-template-columns:1fr}}
+.means div{background:var(--blue-soft);border-radius:var(--r-md);padding:22px;color:var(--ink-2);font-size:.95rem;min-width:0}
+.means div b{display:block;margin-bottom:6px;font-size:1rem;line-height:1.35}
+
+/* Product tiles */
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.tiles{grid-template-columns:1fr}}
+.tile{border:1px solid var(--line);border-radius:var(--r-md);padding:20px;background:var(--card);display:grid;gap:8px;align-content:start;min-width:0}
+.tile b{font-size:1rem}
+.tile p{font-size:.9rem;color:var(--ink-2)}
+.promise{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:var(--card)}
+@media (max-width:860px){.promise{grid-template-columns:1fr}}
+.promise > div{padding:22px;display:grid;gap:10px;align-content:start;min-width:0;border-right:1px solid var(--line)}
+.promise > div:last-child{border-right:0}
+@media (max-width:860px){.promise > div{border-right:0;border-bottom:1px solid var(--line)}.promise > div:last-child{border-bottom:0}}
+.promise .step{display:flex;align-items:center;gap:10px;font-weight:700}
+.promise .step i{font-style:normal;font-family:var(--f-mono);font-size:.72rem;color:var(--blue-ink);background:var(--blue-soft);border-radius:999px;padding:3px 9px}
+.promise p{font-size:.92rem;color:var(--ink-2)}
+
+/* Steps */
+.steps{display:grid;gap:14px;counter-reset:st}
+.stepc{display:grid;grid-template-columns:auto 1fr;gap:18px;padding:22px 24px;border-radius:var(--r-md);background:var(--card);border:1px solid var(--line);align-items:start}
+.stepc .no{counter-increment:st;font-family:var(--f-display);font-weight:700;font-size:1.1rem;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--blue);color:#fff}
+:root[data-theme="dark"] .stepc .no{color:#06102A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stepc .no{color:#06102A}}
+.stepc .no::before{content:counter(st)}
+.stepc b{display:block;font-size:1.05rem;margin-bottom:4px}
+.stepc p{color:var(--ink-2);font-size:.95rem}
+.stepc > div{min-width:0}
+
+/* Positioning map */
+.map{display:grid;grid-template-columns:auto 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:10px;max-width:880px}
+.map .ax{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px}
+.map .ax.v{writing-mode:vertical-rl;transform:rotate(180deg)}
+.map .cell{border-radius:var(--r-md);border:1px dashed var(--line);padding:20px;min-height:120px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;background:var(--card);min-width:0}
+.map .cell.us{border:1.5px solid var(--blue);background:var(--blue-soft)}
+.map .cell .pill.me{background:var(--blue);border-color:var(--blue);color:#fff}
+:root[data-theme="dark"] .map .cell .pill.me{color:#06102A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .map .cell .pill.me{color:#06102A}}
+@media (max-width:560px){.map .cell{padding:14px;min-height:96px}.map .ax.v{font-size:.62rem}}
+
+/* Ideas */
+.tiers{display:grid;gap:28px}
+.tier-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.tier-h .chip{font-size:.8rem}
+.tier-h span{color:var(--muted);font-size:.92rem}
+.ideas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:960px){.ideas{grid-template-columns:1fr}}
+.idea{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.idea .hd{display:flex;gap:12px;align-items:flex-start}
+.idea .n{font-family:var(--f-mono);font-weight:600;font-size:.8rem;color:var(--blue-ink);background:var(--blue-soft);border-radius:8px;padding:3px 8px;flex:none;margin-top:2px}
+.idea h5{font-family:var(--f-display);font-size:1.08rem;font-weight:700;margin:0;line-height:1.25;letter-spacing:-.01em}
+.idea p{font-size:.9rem;color:var(--ink-2)}
+.idea .meta{margin-top:auto;display:grid;gap:4px;font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.idea .meta b{color:var(--ink-2);font-weight:700}
+.nots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:960px){.nots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.nots{grid-template-columns:1fr}}
+.notc{border-radius:var(--r-md);padding:20px;border:1px solid var(--line);background:var(--card);display:grid;gap:8px;align-content:start;min-width:0}
+.notc b{text-decoration:line-through;text-decoration-color:var(--no);text-decoration-thickness:2px}
+.notc small{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.notc p{font-size:.9rem;color:var(--ink-2)}
+
+/* Verdict banner */
+.verdict{border-radius:var(--r-lg);border:1px solid color-mix(in srgb,var(--no) 30%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--no-soft) 70%,var(--card)),var(--card));padding:clamp(24px,4vw,40px);display:grid;gap:22px}
+.verdict .stamp{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--no);font-weight:600}
+.verdict h3{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700}
+.vstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+@media (max-width:860px){.vstats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.vstats div{display:grid;gap:4px;min-width:0}
+.vstats .n{font-family:var(--f-display);font-weight:700;font-size:clamp(1.9rem,3.4vw,2.6rem);letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.vstats .d{font-size:.88rem;color:var(--ink-2)}
+.nextline{font-size:1rem;color:var(--ink-2);border-top:1px solid var(--line);padding-top:18px}
+
+/* Charts */
+.chart{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:clamp(20px,3vw,30px)}
+.chart .cap{font-family:var(--f-mono);font-size:.7rem;color:var(--muted);margin-top:18px;letter-spacing:.02em}
+.chart h5{font-family:var(--f-display);font-size:1.1rem;font-weight:700;margin:0 0 20px;letter-spacing:-.01em}
+.hbars{display:grid;gap:14px}
+.hb{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:16px;align-items:center}
+@media (max-width:560px){.hb{grid-template-columns:1fr;gap:6px}}
+.hb .lab{font-weight:600;font-size:.9rem;color:var(--ink-2)}
+.bar{position:relative;height:34px;border-radius:10px;background:var(--bg-2)}
+section.alt .bar{background:color-mix(in srgb,var(--line) 55%,var(--card))}
+.bar i{position:absolute;left:0;top:0;bottom:0;width:var(--w);min-width:6px;border-radius:10px;background:linear-gradient(90deg,var(--blue),var(--blue-2));transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.bar i.muted{background:color-mix(in srgb,var(--blue-2) 40%,var(--line))}
+.bar i.warn{background:linear-gradient(90deg,var(--no),color-mix(in srgb,var(--no) 60%,var(--card)))}
+.bar span{position:absolute;top:50%;transform:translateY(-50%);left:calc(var(--w) + 10px);font-weight:700;font-size:.88rem;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+.bar span.in{left:12px;color:#fff}
+.bar span small{color:var(--muted);font-weight:600;margin-left:6px}
+.is-pre .bar i{width:0}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+.two > *{min-width:0}
+.bullets{display:grid;gap:12px;margin:22px 0 0;padding:0;list-style:none}
+.bullets li{position:relative;padding-left:22px;color:var(--ink-2);max-width:72ch}
+.bullets li::before{content:"";position:absolute;left:2px;top:.62em;width:8px;height:8px;border-radius:3px;background:var(--blue)}
+.bullets li b{color:var(--ink)}
+
+.reasons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.reasons{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.reasons{grid-template-columns:1fr}}
+.reason{padding:20px;border-radius:var(--r-md);background:var(--card);border:1px solid var(--line);display:grid;gap:6px;align-content:start;min-width:0}
+.reason b{font-size:1rem;line-height:1.35}
+.reason p{color:var(--ink-2);font-size:.9rem}
+
+.arrow{display:inline-flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap;color:var(--ink)}
+.arrow s{text-decoration:none;color:var(--muted);font-weight:600}
+.arrow i{font-style:normal;color:var(--blue)}
+
+.spec{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.spec{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.spec{grid-template-columns:1fr}}
+.spec div{border-radius:var(--r-md);padding:20px;background:var(--card);border:1px solid var(--line);display:grid;gap:6px;align-content:start;min-width:0}
+.spec small{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-ink)}
+.spec p{font-size:.92rem;color:var(--ink-2)}
+
+.proto{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(20px,4vw,48px);align-items:start;border-radius:var(--r-lg);padding:clamp(24px,4vw,44px);background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+@media (max-width:900px){.proto{grid-template-columns:1fr}}
+.proto > div{min-width:0}
+.proto h4{font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:12px}
+.proto p{color:var(--ink-2)}
+.proto .btn{margin-top:22px}
+.flow{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:fl}
+.flow li{counter-increment:fl;display:grid;grid-template-columns:32px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.93rem;color:var(--ink-2)}
+.flow li:last-child{border-bottom:0}
+.flow li::before{content:counter(fl);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-size:.78rem;font-weight:600;background:var(--blue-soft);color:var(--blue-ink)}
+
+/* LTV */
+.formula{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px;padding:30px 20px;border-radius:var(--r-md);background:var(--blue-soft);font-variant-numeric:tabular-nums}
+.formula .x{font-family:var(--f-display);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:var(--ink)}
+.formula .frac{display:inline-grid;text-align:center;font-family:var(--f-display);font-weight:600;font-size:clamp(1.1rem,2vw,1.4rem);color:var(--ink)}
+.formula .frac span:first-child{border-bottom:2px solid var(--ink);padding:0 10px 4px}
+.formula .frac span:last-child{padding-top:4px}
+.formula .eq{font-family:var(--f-display);font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--blue);letter-spacing:-.03em}
+.formula small{display:block;width:100%;text-align:center;color:var(--ink-2);font-size:.9rem}
+svg text{font-family:var(--f-body)}
+.svgbox{overflow-x:auto}
+.svgbox svg{display:block;width:100%;min-width:520px;height:auto}
+
+/* Details */
+details{border:1px solid var(--line);border-radius:var(--r-md);background:var(--card);margin-top:14px}
+summary{cursor:pointer;list-style:none;padding:18px 22px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--f-mono);font-size:1.2rem;color:var(--blue-ink);transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details .db{padding:0 22px 22px;display:grid;gap:14px;color:var(--ink-2);font-size:.93rem}
+details .tw{border-radius:var(--r-sm)}
+pre{margin:0;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:16px;overflow-x:auto;font-family:var(--f-mono);font-size:.78rem;line-height:1.6;color:var(--ink-2)}
+.srcs{margin:0;padding-left:18px;display:grid;gap:6px}
+
+/* Footer */
+footer{padding-block:72px 56px;border-top:1px solid var(--line)}
+.foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px}
+.foot .me{display:flex;align-items:center;gap:14px}
+.foot img{width:44px;height:44px;border-radius:12px}
+.foot b{display:block;font-family:var(--f-display);font-size:1.2rem;letter-spacing:-.01em}
+.foot span{color:var(--muted);font-size:.9rem}
+
+/* Reveal */
+[data-reveal]{transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
+[data-reveal].is-pre{opacity:0;transform:translateY(28px)}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  [data-reveal].is-pre{opacity:1;transform:none}
+  .is-pre .bar i{width:var(--w)}
+}
+
+/* ---------- Logo reel ---------- */
+.giant{position:absolute;left:0;top:50%;z-index:2;white-space:nowrap;font-family:var(--f-display);font-weight:700;font-size:min(40vw,64vh);letter-spacing:-.045em;line-height:1;transform:translate(0,-50%);transform-origin:0 50%;opacity:0;pointer-events:none}
+.giant span{display:block;padding-right:.05em}
+.giant .g-out{color:transparent;-webkit-text-stroke:1.5px rgba(205,220,255,.8)}
+.giant .g-fill{position:absolute;left:0;top:0;color:#fff;clip-path:inset(0 100% 0 0)}
+.cols{position:absolute;inset:0;z-index:1;display:grid;grid-template-columns:repeat(6,1fr);pointer-events:none}
+.cols i{display:block;transform:scaleY(0);transform-origin:50% 100%}
+.cols.c1 i{background:#2B62EA}
+.cols.c2 i{background:#F3F6FF}
+.jtile{z-index:2}
+.tov{position:absolute;inset:0;border-radius:inherit;background:#fff;opacity:0}
+.wm-wrap{position:relative;z-index:1}
+.caret{position:absolute;right:0;top:16%;bottom:16%;width:.07em;min-width:3px;background:#fff;opacity:0}
+.panel.reeling .hero-role,.panel.reeling .hero-name,.panel.reeling .hero-parts,.panel.reeling .scroll-cue{visibility:hidden}
+.fx{position:absolute;z-index:4;left:20px;bottom:24px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;max-width:calc(50% - 60px);opacity:calc(1 - var(--p) * 2.5)}
+.fx .fx-k{font:600 .68rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#8FA6DA;margin-right:4px;white-space:nowrap}
+.fx button{font:600 .78rem var(--f-body);color:#C9D6F5;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 12px;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+.fx button:hover{background:rgba(255,255,255,.14)}
+.fx button.on{background:#fff;color:#0B1A3A;border-color:#fff}
+@media (max-width:900px){.fx{top:14px;bottom:auto;left:16px;right:16px;max-width:none;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}.fx::-webkit-scrollbar{display:none}}
+
+/* ---------- Content additions ---------- */
+.stat .n{white-space:nowrap}
+@media (max-width:560px){.stat{padding:20px 16px}.stat .n{font-size:clamp(1.6rem,7.4vw,2.2rem)}}
+.stats-8 .stat .t{font-weight:600;color:var(--ink-2);font-size:.93rem;line-height:1.4}
+.priority{margin-top:20px;display:flex;align-items:center;gap:22px;padding:22px 26px;border-radius:var(--r-md);background:var(--blue-soft);border:1px solid color-mix(in srgb,var(--blue) 25%,transparent)}
+.priority .pr-n{font-family:var(--f-display);font-weight:800;font-size:clamp(2.2rem,4vw,3rem);letter-spacing:-.04em;line-height:1;color:var(--blue);flex:none}
+.priority p{color:var(--ink-2);max-width:70ch}
+@media (max-width:560px){.priority{flex-direction:column;align-items:flex-start;gap:10px}}
+.tile-wide{grid-row:span 2}
+@media (max-width:560px){.tile-wide{grid-row:auto}}
+.mods{margin:6px 0 0;padding:0;list-style:none;counter-reset:md;display:grid;gap:8px}
+.mods li{counter-increment:md;display:flex;gap:10px;align-items:center;font-size:.9rem;color:var(--ink-2)}
+.mods li::before{content:counter(md);flex:none;width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font:600 .74rem var(--f-mono);background:var(--blue-soft);color:var(--blue-ink)}
+.chip.wrapc{white-space:normal;align-items:flex-start;border-radius:12px}
+.chip.wrapc::before{margin-top:.45em}
+small.muted{display:block;font-weight:500;color:var(--muted);font-size:.8rem;margin-top:2px}
+.ideas-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:760px){.ideas-2{grid-template-columns:1fr}}
+.spec-3{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:4px}
+@media (max-width:760px){.spec-3{grid-template-columns:1fr}}
+.kk{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-ink)}
+.mono{font-family:var(--f-mono);font-size:.88rem !important;color:var(--ink) !important;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+
+<!-- ============ INTRO ============ -->
+<section class="intro" id="top" aria-label="Introduction">
+  <div class="stage">
+    <div class="panel" id="panel">
+      <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+      <div class="gridlines"></div>
+      <div class="cols c1" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="cols c2" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="giant" id="giant" aria-hidden="true"><span class="g-out">Jobescape</span><span class="g-fill" id="gFill">Jobescape</span></div>
+      <div class="intro-content wait" id="introContent">
+        <div class="lockup" id="lockup" role="img" aria-label="Jobescape">
+          <div class="jtile" id="tile"><div class="tov" id="tov"></div><svg viewBox="0 0 512 512" aria-hidden="true"><path id="pa" d="M149.6,222.4C225.3,177.8 238.9,170.2 245.5,168.5C258.2,165.3 267.5,167.2 284.0,176.7C296.9,184.1 300.4,184.8 304.5,181.0L307.0,178.7L307.0,137.3L307.0,95.9L304.6,93.6C303.3,92.3 298.5,89.4 293.9,87.2C273.0,77.1 250.4,75.6 228.5,82.8C223.4,84.5 211.9,90.4 196.0,99.5C127.6,138.8 127.0,139.2 118.8,146.9C105.1,159.7 97.1,173.3 92.8,190.7C91.0,198.3 90.7,202.6 90.6,222.1C90.5,243.4 90.6,244.9 92.5,247.0C95.0,249.8 97.9,251.0 100.6,250.5C101.8,250.2 123.9,237.6 149.6,222.4Z"/><path id="pb" d="M276.7,431.0C281.0,430.0 286.8,428.2 289.5,427.0C292.2,425.8 314.9,413.1 339.9,398.7C380.2,375.5 386.2,371.7 393.2,365.1C406.8,352.4 415.0,338.5 419.0,321.8C420.8,314.2 421.0,309.0 421.2,256.5C421.5,200.2 421.5,199.4 419.3,190.7C416.7,180.8 411.8,169.5 406.9,162.3C402.7,156.1 391.8,144.7 386.0,140.5C378.3,134.9 349.8,119.0 347.4,119.0C346.2,119.0 343.8,120.2 342.1,121.6L339.0,124.2L339.0,203.0C339.0,250.0 338.6,283.8 338.0,286.9C336.5,295.0 332.2,303.0 326.1,309.0C322.0,313.0 314.5,318.0 298.1,327.4C269.7,343.8 268.1,344.4 256.0,344.4C243.9,344.4 242.3,343.8 213.9,327.4C188.9,313.0 182.3,307.6 177.7,297.8C174.0,290.0 173.0,283.9 173.0,269.3C173.0,257.5 172.9,256.8 170.5,254.5C165.7,249.6 164.1,250.3 127.8,271.6C109.5,282.3 93.7,292.0 92.8,293.2C90.2,296.1 90.4,310.8 93.0,321.8C97.0,338.6 105.2,352.4 118.8,365.1C125.8,371.7 131.8,375.5 172.1,398.7C197.1,413.0 220.2,425.9 223.5,427.3C228.9,429.5 239.6,432.2 247.5,433.4C253.0,434.2 268.8,432.9 276.7,431.0Z"/></svg></div>
+          <div class="wm-wrap" id="wmWrap"><span class="wm" id="wm">Jobescape</span></div>
+        </div>
+        <div class="hero-role" id="heroRole"><span class="dot"></span>Product Manager Intern</div>
+        <h1 class="hero-name" id="heroName" aria-label="Karim Zharbulov"><span class="mask" aria-hidden="true"><span class="wd">Karim</span></span><span class="mask" aria-hidden="true"><span class="wd">Zharbulov</span></span></h1>
+        <nav class="hero-parts" id="heroParts" aria-label="Parts">
+          <a href="#part-a"><b>A</b>Audience</a>
+          <a href="#part-b"><b>B</b>Competitors</a>
+          <a href="#part-c"><b>C</b>Challenge</a>
+          <a href="#part-d"><b>D</b>Economics</a>
+        </nav>
+      </div>
+      
+      <a class="scroll-cue" id="scrollCue" href="#overview"><span class="mouse"></span>Scroll</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="nav-brand" href="#top"><img src="data:image/png;base64,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" alt=""><span>Karim Zharbulov<small>PM Intern · Test assignment</small></span></a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#overview">Overview</a>
+      <a href="#part-a">A · Audience</a>
+      <a href="#part-b">B · Competitors</a>
+      <a href="#part-c">C · Challenge</a>
+      <a href="#part-d">D · Economics</a>
+    </nav>
+    <a class="btn btn-primary" href="https://claude-challenge-v2.lovable.app" target="_blank" rel="noopener">Prototype ↗</a>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main>
+
+<!-- ============ OVERVIEW ============ -->
+<section class="part" id="overview">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="tag"><span class="l">✓</span>Test Assignment · Jobescape · 3 October 2026</div>
+      <h2 class="thesis">Product Manager Test Assignment: <em>Jobescape</em> (Claude course)</h2>
+    </div>
+    <div class="ov-grid" data-reveal>
+      <a class="ov" href="#part-a"><span class="l">PART A</span><h3>Audience &amp; Product</h3><p>The ads sell a beginner course, but most quiz-takers are over 45 and already use AI.</p><span class="go">4 segments · expected vs got →</span></a>
+      <a class="ov" href="#part-b"><span class="l">PART B</span><h3>Competitors</h3><p>One direct competitor (Coursiv) and seven indirect ones, each better than us at one thing.</p><span class="go">6 ideas, ranked →</span></a>
+      <a class="ov" href="#part-c"><span class="l">PART C</span><h3>Challenge Release Verdict</h3><p>The release did not work. Only 41% come back the next day, and only 4% reach Day 7.</p><span class="go">Verdict · v2 prototype →</span></a>
+      <a class="ov" href="#part-d"><span class="l">PART D</span><h3>Subscription Economics</h3><p>The hypothesis is wrong, but the test is worth running.</p><span class="go">8.3% break-even →</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART A ============ -->
+<section class="part alt" id="part-a">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="tag"><span class="l">A</span>Audience &amp; Product</div>
+      <h2 class="thesis">The ads sell a beginner course, but most quiz-takers are <em>over 45 and already use AI.</em></h2>
+      <p class="lead">The product has content for each group (job courses, app building, CV builder, portfolio), but the quiz sends everyone to the same plan, so most people never find their part. That puts the second payment at risk.</p>
+      <div class="used"><span class="k">What I used</span><span class="pill">7 ad videos</span><span class="pill">Quiz answers of ~50,000 people</span><span class="pill">My own quiz runs with different answers</span><span class="pill">App walkthrough after paying</span></div>
+    </div>
+
+    <div class="task" data-reveal style="margin-top:0">
+      <span class="k">Task 1 · Audience segments</span>
+      <h3>How I split it: by goal, then by AI experience and age.</h3>
+      <p>Goal comes from work status and "How would learning Claude help you?". Age doesn't change quiz completion (51–55% in every group), while goal decides what to promise and what the first lesson should be. Only 1 in 10 is new to AI, and 56% have already used Claude.</p>
+    </div>
+
+    <h4 class="sub" data-reveal style="margin-top:8px">The audience in simple numbers</h4>
+    <div class="stats stats-8" data-reveal>
+      <div class="stat"><span class="n">6 in 10</span><span class="t">Aged 45 or older</span></div>
+      <div class="stat"><span class="n">56%</span><span class="t">Have already used Claude</span></div>
+      <div class="stat"><span class="n">8 in 10</span><span class="t">AI already works well, or "OK, but I want more"</span></div>
+      <div class="stat"><span class="n">~30 min</span><span class="t">Time per day chosen in the quiz</span><span class="d">On average. The ads say 15</span></div>
+      <div class="stat"><span class="n">4 in 10</span><span class="t">Biggest blocker: "No plan or guidance"</span></div>
+      <div class="stat"><span class="n">~8 in 10</span><span class="t">Want an AI mentor</span><span class="d">In every group</span></div>
+      <div class="stat"><span class="n">~7 in 10</span><span class="t">Want a portfolio website</span><span class="d">In every group</span></div>
+      <div class="stat"><span class="n">1 in 3</span><span class="t">Say a certificate would "definitely" help</span><span class="d">Another 1 in 3 say it "doesn't matter"</span></div>
+    </div>
+
+    <h4 class="sub" data-reveal>The 4 segments</h4>
+    <div data-reveal>
+      <div class="share" role="img" aria-label="Share of users: Work Accelerators 28%, Business Owners 27%, Cautious Late Adopters 22%, Career Restarters 19%">
+        <i class="s1" style="flex:28"></i><i class="s2" style="flex:27"></i><i class="s3" style="flex:22"></i><i class="s4" style="flex:19"></i>
+      </div>
+      <div class="segs">
+        <article class="seg focus">
+          <div class="seg-top"><span class="pct">28%</span><span class="sw s1"></span></div>
+          <h4>1. Work Accelerators</h4>
+          <span class="focus-tag">Priority</span>
+          <dl>
+            <div><dt>Who they are</dt><dd>Employees and freelancers of all ages. 8 in 10 already use Claude</dd></div>
+            <div><dt>What they want</dt><dd>Finish work faster, earn more, get promoted</dd></div>
+            <div><dt>What they expect</dt><dd>Practical uses for <i>their</i> job, beyond what they already do</dd></div>
+            <div><dt>Their pain</dt><dd>7 in 10 spend a lot of time fixing AI output. Almost half have no plan. Most likely to quit the quiz</dd></div>
+          </dl>
+        </article>
+        <article class="seg focus">
+          <div class="seg-top"><span class="pct">27%</span><span class="sw s2"></span></div>
+          <h4>2. Business Owners &amp; Side-hustlers</h4>
+          <span class="focus-tag">Priority</span>
+          <dl>
+            <div><dt>Who they are</dt><dd>Mostly business owners, plus employees who want to start one. Most over 45. Many in sales</dd></div>
+            <div><dt>What they want</dt><dd>Build without paying a developer: an app, a site, automations</dd></div>
+            <div><dt>What they expect</dt><dd>Build something real, fast. 8 in 10 have an unbuilt app idea</dd></div>
+            <div><dt>Their pain</dt><dd>Developers are expensive, don't know where to start. 4 in 10 say certificates don't matter</dd></div>
+          </dl>
+        </article>
+        <article class="seg">
+          <div class="seg-top"><span class="pct">22%</span><span class="sw s3"></span></div>
+          <h4>3. Cautious Late Adopters</h4>
+          <dl>
+            <div><dt>Who they are</dt><dd>All over 45, more than half over 55. 3 in 4 never used Claude</dd></div>
+            <div><dt>What they want</dt><dd>Stop feeling left behind, feel confident with AI at work</dd></div>
+            <div><dt>What they expect</dt><dd>Small, slow steps. 3 in 4 want their own pace, most pick 10–20 min</dd></div>
+            <div><dt>Their pain</dt><dd>AI feels new and confusing. Only 1 in 3 believes you can build an app without code</dd></div>
+          </dl>
+        </article>
+        <article class="seg">
+          <div class="seg-top"><span class="pct">19%</span><span class="sw s4"></span></div>
+          <h4>4. Career Restarters &amp; Explorers</h4>
+          <dl>
+            <div><dt>Who they are</dt><dd>Between jobs or figuring out the next step. A mix of 18–24 and 55+</dd></div>
+            <div><dt>What they want</dt><dd>Turn a new skill into money: a job, freelance work, a portfolio</dd></div>
+            <div><dt>What they expect</dt><dd>A clear path to income and a certificate. 3 in 10 pick an hour a day</dd></div>
+            <div><dt>Their pain</dt><dd>Can't see how learning turns into earning</dd></div>
+          </dl>
+        </article>
+      </div>
+    </div>
+    <div class="priority" data-reveal>
+      <span class="pr-n">55%</span>
+      <p><b>Priority: groups 1 and 2 (55% of users).</b> They are not beginners and have the biggest gap between "a course from zero" and what they need.</p>
+    </div>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 2 · Does the product meet their need</span>
+      <h3>After paying: a lesson path, short daily challenges, extra AI tools and an AI mentor.</h3>
+      <p>Lessons take about 15 minutes a day.</p>
+    </div>
+    <div class="tiles" data-reveal>
+      <div class="tile tile-wide"><b>Main course: Mastering Claude AI</b><p>5 modules from simple to advanced. Ends with a final build session. Short parts with ready prompts to copy.</p>
+        <ol class="mods"><li>Chat for real work</li><li>Set up your workspace</li><li>Teach Claude your skills</li><li>Daily and weekly routines on autopilot</li><li>Direct AI agents</li></ol></div>
+      <div class="tile"><b>Challenges</b><p>7-, 14- and 28-day courses, 15 min a day: Claude Basics, Claude Advanced, and job courses (Sales, Project Managers, Excel, Marketing, Accounting, PowerPoint, Microsoft 365, Developers, Educators and more).</p></div>
+      <div class="tile"><b>Apps</b><p>CV builder, Portfolio, Prompt library, image/video/music tools. Shown on the payment page only as "+7 AI tools".</p></div>
+      <div class="tile"><b>AI tools</b><p>Writing assistants (summaries, emails, headlines). Made for freelancing, not for Claude.</p></div>
+      <div class="tile"><b>Ask Mentor</b><p>A basic AI mentor on every screen. Works fine for questions.</p></div>
+      <div class="tile"><b>Certificates</b><p>Bronze, Silver, Gold after modules 2–4, Platinum for the whole course. Cards say "certificate earned!" even at 2% progress.</p></div>
+    </div>
+
+    <h4 class="sub" data-reveal>What we promise before they pay</h4>
+    <div class="promise" data-reveal>
+      <div><span class="step"><i>1</i>Ads</span><p>"From zero", "no coding", "15 minutes a day", a 7-day challenge: Claude like a pro by day 3, first automation by day 5, specialist by day 7. "Certified Claude Master".</p></div>
+      <div><span class="step"><i>2</i>Quiz</span><p>A personal plan, a polished document in 2 minutes, an app without coding, an AI mentor, a portfolio website, a certificate that helps your career.</p></div>
+      <div><span class="step"><i>3</i>Payment page</span><p>"Your learning plan is ready" with your goal, time and main problem, 50+ short lessons, real projects, 24/7 AI mentor, 7 extra AI tools, "Official Claude Mastery Certificate".</p></div>
+    </div>
+
+    <h4 class="sub" data-reveal>Expected vs got</h4>
+    <div class="tw" data-reveal>
+      <table class="t-wide">
+        <thead><tr><th>What the user expected</th><th>What they got</th><th>Result</th><th>Who notices most</th></tr></thead>
+        <tbody>
+          <tr><td>A plan made from my answers</td><td>Before paying, this works: the quiz reflects my answers 3 times. After paying, everyone gets the same main course. Job courses exist, but the quiz never sends anyone to them</td><td><span class="chip part wrapc">Feels personal, but the schedule is the same for all</span></td><td>Everyone, esp. Work Accelerators</td></tr>
+          <tr><td>AI mentor, 24/7</td><td>A basic mentor on every screen</td><td><span class="chip ok">Delivered (basic)</span></td><td>Everyone</td></tr>
+          <tr><td>15 minutes a day</td><td>Lessons and challenges take about 15 min</td><td><span class="chip ok">Delivered</span></td><td>Late Adopters</td></tr>
+          <tr><td>Easy, from zero</td><td>First lessons are easy. By module 4 the course moves to routines and AI agents</td><td><span class="chip part">Easy at first</span></td><td>Late Adopters</td></tr>
+          <tr><td>More than the basics</td><td>The course gets advanced, but everyone starts at simple chat</td><td><span class="chip part">There, but later</span></td><td>Work Accelerators</td></tr>
+          <tr><td>Specialist in 7 days, automation by day 5</td><td>Automation only comes in module 4</td><td><span class="chip no">Overpromised</span></td><td>Late Adopters, Work Accelerators</td></tr>
+          <tr><td>A polished document in 2 minutes</td><td>Module 1 and PowerPoint / Excel / M365 courses exist, but users aren't sent there</td><td><span class="chip part">Exists, hard to find</span></td><td>Work Accelerators</td></tr>
+          <tr><td>Lessons for managers (ad 12176)</td><td>Not in the main course. A Project Managers course exists, but nothing leads there</td><td><span class="chip no">Not delivered</span></td><td>Managers</td></tr>
+          <tr><td>Build an app without coding</td><td>Automations, agents and a build session exist, only at the end</td><td><span class="chip part">Comes late</span></td><td>Business Owners</td></tr>
+          <tr><td>Portfolio website</td><td>Portfolio app and CV builder, shown only as "+7 AI tools"</td><td><span class="chip part">Exists, hidden</span></td><td>Career Restarters</td></tr>
+          <tr><td>Official certificate</td><td>Jobescape certificates. The quiz itself says the course isn't connected to Anthropic</td><td><span class="chip part">Delivered partly</span></td><td>Career Restarters</td></tr>
+          <tr><td>+7 AI tools</td><td>Mostly freelance writing tools from the older platform</td><td><span class="chip ok">Delivered</span></td><td>Everyone</td></tr>
+          <tr><td>A 7-day challenge</td><td>An auto-renewing subscription: $15.19 for the first 4 weeks, then <b>$38.95 every 4 weeks</b>. The 1-week plan renews at the 4-week price, in small print. In-app offer to extend for $69.99 a year</td><td><span class="chip part">Delivered partly</span></td><td>Late Adopters</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 class="sub" data-reveal>How well each group is served, from ad to product</h4>
+    <div class="tw" data-reveal>
+      <table class="t-wide">
+        <thead><tr><th>Group</th><th>Ads</th><th>Quiz</th><th>Product</th><th>Where it breaks</th></tr></thead>
+        <tbody>
+          <tr><td>1. Work Accelerators</td><td><span class="chip ok">Strong</span></td><td><span class="chip ok">Strong</span></td><td><span class="chip part">Strong, but hidden</span></td><td>Start from simple chat, job courses and manager content aren't shown</td></tr>
+          <tr><td>2. Business Owners</td><td><span class="chip part">Medium</span></td><td><span class="chip ok">Strong</span></td><td><span class="chip ok">Strong</span></td><td>No ad brings them in, building comes at the end</td></tr>
+          <tr><td>3. Late Adopters</td><td><span class="chip ok">Strong</span></td><td><span class="chip part">Medium</span></td><td><span class="chip part">Partly</span></td><td>Hard by module 4, "specialist in 7 days" sets them up to feel they failed</td></tr>
+          <tr><td>4. Career Restarters</td><td><span class="chip part">Medium</span></td><td><span class="chip part">Partly</span></td><td><span class="chip ok">Strong</span></td><td>CV builder and portfolio hidden as "+7 AI tools"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 class="sub" data-reveal>Doubts before buying: did we answer them?</h4>
+    <div class="tw" data-reveal>
+      <table class="t-wide">
+        <thead><tr><th>Group</th><th>Likely worry</th><th>What the quiz does</th><th>Answered in the product?</th></tr></thead>
+        <tbody>
+          <tr><td>Work Accelerators</td><td>"Too basic for me?"</td><td>Nothing. Existing Claude users quit the quiz more (61% vs 57%)</td><td><span class="chip part">Partly</span> Advanced content exists, but they start from the basics</td></tr>
+          <tr><td>Business Owners</td><td>"Can I really build without code?"</td><td>One "never been this easy" screen, no finished-app example</td><td><span class="chip part">Partly</span> Yes, but only at the end</td></tr>
+          <tr><td>Late Adopters</td><td>"Will I keep up? Surprise charges?"</td><td>Review from someone who <b>paid by mistake</b> right before the paywall</td><td>Easy start, hard by module 4. Renewal terms in small print</td></tr>
+          <tr><td>Career Restarters</td><td>"Will this help me earn? Is the certificate worth anything?"</td><td>Shows the certificate even to people who said it doesn't matter</td><td>CV and portfolio help, but hidden. Certificate isn't official</td></tr>
+          <tr><td>Everyone</td><td>"Is this an official Claude course?"</td><td>Claude name, Claude-like logo, "Certified Claude Master", a tiny disclaimer</td><td><span class="chip no">No</span> Payment page still says "Official"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" data-reveal>
+      <span class="k">Main gap</span>
+      <blockquote>The content exists for almost every group, but the funnel promises a personal plan and then sends everyone to the same first lesson.</blockquote>
+      <p>The ads also promise beginners more speed than the course gives.</p>
+    </div>
+
+    <h4 class="sub" data-reveal>Why this is risky</h4>
+    <div class="tw" data-reveal>
+      <table class="t-wide">
+        <thead><tr><th>Risk</th><th>Why it happens</th><th>What I would track</th></tr></thead>
+        <tbody>
+          <tr><td>No second payment</td><td>The first payment comes from the promise, the second from the product. If people don't find their part early, they cancel before renewal</td><td>Second-payment rate by group</td></tr>
+          <tr><td>Refunds</td><td>A 7-day challenge is advertised, but billing repeats every 4 weeks, even on the 1-week plan</td><td>Refund requests in the first 2 weeks, by plan</td></tr>
+          <tr><td>Blocked ad accounts and payments</td><td>"Official", "Certified Claude Master", a Claude-like logo, fake "verified" tweets. Meta and TikTok ban for this</td><td>Rejected ads</td></tr>
+          <tr><td>A free alternative</td><td>Anthropic launched free Claude courses in August 2026. A generic-feeling course gets compared with the free one</td><td>"Free course" mentions in cancellations and reviews</td></tr>
+          <tr><td>Wasted ad money</td><td>Ads attract beginners, while the best-served groups have no ads</td><td>Sales per ad, by group</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART B ============ -->
+<section class="part" id="part-b">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="tag"><span class="l">B</span>Competitors</div>
+      <h2 class="thesis">One direct competitor (Coursiv) and seven indirect ones, <em>each better than us at one thing.</em></h2>
+      <p class="lead">Coursiv sells the same way to the same beginners but teaches 10+ AI tools. Anthropic is free and official, LinkedIn and Coursera give trusted certificates, live workshops guarantee a build, and Headway builds a daily habit.</p>
+      <div class="used"><span class="k">What I used</span><span class="pill">Coursiv &amp; Jobescape quizzes up to the email step</span><span class="pill">Jobescape app after paying</span><span class="pill">Competitor websites &amp; app store data</span><span class="pill">Review sites &amp; course listings</span></div>
+    </div>
+
+    <div class="task" data-reveal style="margin-top:0">
+      <span class="k">Task 1 · Find competitors</span>
+      <h3>The job: "learn AI so I don't fall behind at work".</h3>
+    </div>
+    <div class="two" data-reveal>
+      <div class="tile"><span class="chip info" style="justify-self:start">Direct</span><b>Same job, same audience and same sales model</b><p>Ads → quiz → subscription.</p></div>
+      <div class="tile"><span class="chip part" style="justify-self:start">Indirect</span><b>Same job solved differently, or the same model for another topic</b><p>Free courses, video, live classes, or habit apps competing for the same money and time.</p></div>
+    </div>
+
+    <div class="tw" data-reveal style="margin-top:20px">
+      <table class="t-wide">
+        <thead><tr><th>Competitor</th><th>Type</th><th>Same job?</th><th>Same audience?</th><th>Why I count it</th><th>Our groups it pulls</th></tr></thead>
+        <tbody>
+          <tr class="key"><td>Coursiv</td><td><span class="chip info">Direct</span></td><td>Yes</td><td>Yes: non-technical beginners afraid of falling behind</td><td>Same ads → quiz → paywall, daily challenge, certificate</td><td>Late Adopters, Work Accelerators</td></tr>
+          <tr><td>Anthropic Academy</td><td><span class="chip part">Indirect</span></td><td>Yes: learn Claude</td><td>Partly</td><td>Free and official, found first on "learn Claude"</td><td>Work Accelerators, Career Restarters</td></tr>
+          <tr><td>Claude course sites <small class="muted">claudecoworkcourse.com, Udemy, Coursera, Scrimba</small></td><td><span class="chip part">Indirect</span></td><td>Yes, for one task</td><td>Partly: more technical</td><td>Same tool, free or one payment</td><td>Business Owners, Work Accelerators</td></tr>
+          <tr><td>Live Claude workshops <small class="muted">Maven, Every</small></td><td><span class="chip part">Indirect</span></td><td>Yes: first app, no code</td><td>Partly: can pay $1,000+</td><td>Deliver our quiz's strongest promise</td><td>Business Owners</td></tr>
+          <tr><td>Coursera <small class="muted">Google AI</small></td><td><span class="chip part">Indirect</span></td><td>Yes: AI + CV certificate</td><td>Partly: career-focused</td><td>Compared with Google's certificate</td><td>Career Restarters</td></tr>
+          <tr><td>LinkedIn Learning</td><td><span class="chip part">Indirect</span></td><td>Yes: AI for a promotion</td><td>Partly: office workers</td><td>Certificate goes straight to the profile</td><td>Career Restarters, Work Accelerators</td></tr>
+          <tr><td>Udemy, Skillshare</td><td><span class="chip part">Indirect</span></td><td>Yes, cheaply</td><td>Partly: price shoppers</td><td>Cheaper, Udemy is paid once</td><td>Anyone who dislikes subscriptions</td></tr>
+          <tr><td>Headway, Nibble</td><td><span class="chip part">Indirect</span></td><td>No: books, self-improvement</td><td>Yes: adults 35+, 15 min a day</td><td>Same model, same people's money and time</td><td>Late Adopters</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 class="sub" data-reveal>Where we stand</h4>
+    <div class="map" data-reveal role="img" aria-label="Positioning map: Jobescape and live workshops are the only guided, Claude-only options">
+      <div></div>
+      <div class="ax">Little guidance</div>
+      <div class="ax">A lot of guidance · plan, daily steps, help</div>
+      <div class="ax v">Only Claude</div>
+      <div class="cell"><span class="pill">Anthropic Academy</span><span class="pill">Claude course sites</span><span class="pill">Udemy</span></div>
+      <div class="cell us"><span class="pill me">Jobescape</span><span class="pill">Live workshops ($1,000+)</span></div>
+      <div class="ax v">AI in general</div>
+      <div class="cell"><span class="pill">Coursera</span><span class="pill">LinkedIn Learning</span><span class="pill">Skillshare</span></div>
+      <div class="cell"><span class="pill">Coursiv</span></div>
+    </div>
+    <p class="note" data-reveal>We share guided, Claude-only training for non-technical adults only with $1,000+ workshops.</p>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 2 · How they serve their audience</span>
+      <h3>Coursiv, the direct competitor.</h3>
+    </div>
+    <div class="tw" data-reveal>
+      <table class="t-mid">
+        <tbody>
+          <tr><td>Who it serves</td><td>Complete beginners in marketing, finance, real estate and small business. 1M+ Android installs, 4.6 stars from about 46,000 reviews</td></tr>
+          <tr><td>Similarity</td><td><span class="chip no">High</span> Same audience, fear and model. Teaches 10+ AI tools, Claude is one of many</td></tr>
+          <tr><td>Needs covered</td><td>"Don't let me fall behind", "give me a certificate", "let me learn on my phone in short sessions"</td></tr>
+          <tr><td>Onboarding</td><td>Google ad lands in the quiz. 17 questions with a numbered counter. Mostly fear questions, "2,000,000+ people" on 3 screens, a 75–90 second passive loader</td></tr>
+          <tr><td>Product</td><td>A 28-day challenge, 10–15 min a day, with audio lessons. Certificate shareable on LinkedIn</td></tr>
+          <tr><td>Payment</td><td>Trial of about $6–7, then $39.99 every 4 weeks</td></tr>
+          <tr><td>Done well</td><td>One simple promise (28 days). Short quiz. Audio. A big social-proof number. Asks the user's industry</td></tr>
+          <tr><td>Done poorly</td><td>Top complaints: unexpected renewals and hard refunds. Content called basic. The quiz barely shows the product</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 class="sub" data-reveal>Coursiv vs Jobescape quiz</h4>
+    <p class="note" data-reveal style="margin:-6px 0 16px">Both use the same template (who you are → worry → calm → personalize → loader → email), down to the same "There is nothing to worry about" screen with the same Harvard quote.</p>
+    <div class="tw" data-reveal>
+      <table class="t-mid">
+        <thead><tr><th></th><th>Coursiv</th><th>Jobescape</th><th>Better</th></tr></thead>
+        <tbody>
+          <tr><td>Length</td><td>17 questions</td><td>About 24</td><td><span class="chip part">Coursiv</span></td></tr>
+          <tr><td>Progress bar</td><td>Numbered, length visible</td><td>Named stages, length hidden</td><td>Each fits its length</td></tr>
+          <tr><td>Main feeling</td><td>Fear</td><td>Concrete results</td><td><span class="chip ok">Jobescape</span></td></tr>
+          <tr><td>Shows the product</td><td>Almost never</td><td>Twice (document in 2 min, app without code)</td><td><span class="chip ok">Jobescape</span></td></tr>
+          <tr><td>Feels personal</td><td>Only the loader</td><td>Answer summary + "AI profile" card</td><td><span class="chip ok">Jobescape</span></td></tr>
+          <tr><td>Loader</td><td>75–90 s of waiting</td><td>Shorter, with yes/no questions</td><td><span class="chip ok">Jobescape</span></td></tr>
+          <tr><td>Asks job or industry</td><td>Yes</td><td>No (only work status)</td><td><span class="chip part">Coursiv</span></td></tr>
+          <tr><td>Daily time options</td><td>10 / 15 / 20 min</td><td>10 / 20 / 30 / 60 min</td><td><span class="chip ok">Jobescape</span> users pick ~30</td></tr>
+          <tr><td>Gender</td><td>Not asked</td><td>Asked, never used</td><td><span class="chip part">Coursiv</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" data-reveal>Our quiz sells better (it shows the product and feels personal). Coursiv is shorter and asks the industry, which we need to route users to job courses.</p>
+
+    <h4 class="sub" data-reveal>Indirect competitors</h4>
+    <div class="tw" data-reveal>
+      <table class="t-wide" style="min-width:900px">
+        <thead><tr><th>Competitor</th><th>Who it serves, similarity</th><th>Needs covered, and how</th><th>Done well</th><th>Done poorly</th></tr></thead>
+        <tbody>
+          <tr><td>Anthropic Academy</td><td>Beginners and developers. <b>Medium</b></td><td>Learn Claude properly, trusted certificate, free. Email sign-up, videos, quizzes</td><td>Free, official, up to date, verifiable certificates for LinkedIn</td><td>No plan, routine, reminders or support</td></tr>
+          <tr><td>Claude course sites</td><td>Freelancers, small business, some tech skills. <b>Medium</b></td><td>One course = one result. Free to ~$15–25</td><td>One payment, clear result, real-tool practice. <b>Openly say a paid Claude plan is needed</b></td><td>Little guidance, more technical</td></tr>
+          <tr><td>Live workshops <small class="muted">Maven, Every</small></td><td>Founders, marketers, PMs. <b>Low–medium</b></td><td>Build a first real app with an expert. Every: $1,250 for one day</td><td><b>Everyone leaves with a working project</b></td><td>Expensive, fixed dates, intense</td></tr>
+          <tr><td>Coursera <small class="muted">Google AI</small></td><td>Career-focused. <b>Medium</b></td><td>Certificate employers trust. ~8 h of video, $49/month</td><td>Google's name, real project</td><td>Video, desktop-first, no help for nervous beginners</td></tr>
+          <tr><td>LinkedIn Learning</td><td>Office workers. <b>Medium</b></td><td>Show the boss you know AI. $39.99/month</td><td><b>Certificate where recruiters look</b></td><td>Generic, nothing pushes you to finish</td></tr>
+          <tr><td>Udemy, Skillshare</td><td>Price shoppers. <b>Low–medium</b></td><td>Cheap, own it forever. ~$15–30 per course</td><td>Low price, pay once</td><td>Varying quality, no path</td></tr>
+          <tr><td>Headway, Nibble</td><td>Adults 35+. <b>High audience, other topic</b></td><td>Quiz → plan → 7-day trial, 15 min a day. <b>Longer plans cheaper per week, shown upfront</b></td><td>Strong habit, clear plans, comparison pages</td><td>Not about AI</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 class="sub" data-reveal>What competitors show about our 4 groups</h4>
+    <div class="tw" data-reveal>
+      <table class="t-mid">
+        <thead><tr><th>Our group</th><th>Who serves them better, at what</th><th>What we're missing</th></tr></thead>
+        <tbody>
+          <tr><td>1. Work Accelerators <span class="chip info">28%</span></td><td>Anthropic Academy: free, official. Course sites: one task</td><td>A start above the basics, a course for their job</td></tr>
+          <tr><td>2. Business Owners <span class="chip info">27%</span></td><td>Live workshops: a guaranteed working project</td><td>A first build early</td></tr>
+          <tr><td>3. Late Adopters <span class="chip info">22%</span></td><td>Coursiv, Headway: short habit, audio</td><td>A gentle pace, clear billing</td></tr>
+          <tr><td>4. Career Restarters <span class="chip info">19%</span></td><td>LinkedIn Learning, Coursera: trusted certificates</td><td>A verifiable certificate on LinkedIn</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" data-reveal>
+      <span class="k">Shared weak spot</span>
+      <blockquote>Unexpected renewals and hard refunds are the top complaint for Coursiv, and for Jobescape too.</blockquote>
+      <p>Jobescape on Trustpilot: 4.4/5, ~9,400 reviews.</p>
+    </div>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 3 · What to take</span>
+      <h3>Six ideas, ranked by three questions.</h3>
+      <p>Does it fix the Part A gap, does it help revenue (especially the second payment), and how much work is it.</p>
+    </div>
+    <div class="tiers">
+      <div data-reveal>
+        <div class="tier-h"><span class="chip ok">Group A · Do first</span><span>Cheap, uses what we have, fixes the main gap</span></div>
+        <div class="ideas ideas-2">
+          <div class="idea"><div class="hd"><span class="n">#1</span><h5>Ask the user's job and make "your plan" theirs</h5></div><p>One industry question, then the matching course as "your plan". Use the chosen minutes to set lesson length.</p><div class="meta"><span><b>From</b> Coursiv, Headway</span><span><b>Helps</b> All 4, mostly Work Accelerators</span><span><b>Revenue</b> Content exists. Users find their part on day 1, which drives renewal. The quiz still feels as personal</span></div></div>
+          <div class="idea"><div class="hd"><span class="n">#2</span><h5>A first build in week 1</h5></div><p>For users with an app idea, ending with something that works.</p><div class="meta"><span><b>From</b> Live workshops</span><span><b>Helps</b> Business Owners</span><span><b>Revenue</b> Workshops charge $1,000+ for this. Having an app idea is the strongest sign of quiz completion</span></div></div>
+        </div>
+      </div>
+      <div data-reveal>
+        <div class="tier-h"><span class="chip info">Group B · Do next</span><span>Protect revenue, build trust</span></div>
+        <div class="ideas ideas-2">
+          <div class="idea"><div class="hd"><span class="n">#3</span><h5>A renewal reminder that sells</h5></div><p>With the user's progress and the renewal date in the app.</p><div class="meta"><span><b>From</b> Coursiv's complaints, Headway</span><span><b>Helps</b> Late Adopters</span><span><b>Revenue</b> Gives a reason to stay and lowers bank disputes</span></div></div>
+          <div class="idea"><div class="hd"><span class="n">#4</span><h5>Flag lessons that need a paid Claude plan</h5></div><p>With a free-plan version where possible.</p><div class="meta"><span><b>From</b> Claude course sites</span><span><b>Helps</b> Late Adopters, Career Restarters</span><span><b>Revenue</b> A hidden cost mid-course feels like a trick</span></div></div>
+        </div>
+      </div>
+      <div data-reveal>
+        <div class="tier-h"><span class="chip part">Group C · Once A and B work</span><span>Growth</span></div>
+        <div class="ideas ideas-2">
+          <div class="idea"><div class="hd"><span class="n">#5</span><h5>A verifiable certificate</h5></div><p>ID, check page, "Add to LinkedIn".</p><div class="meta"><span><b>From</b> LinkedIn Learning, Coursera, Anthropic Academy</span><span><b>Helps</b> Career Restarters</span><span><b>Revenue</b> A reason to finish, free advertising, and replaces "Official" with something real</span></div></div>
+          <div class="idea"><div class="hd"><span class="n">#6</span><h5>Audio lessons as a main feature</h5></div><div class="meta"><span><b>From</b> Coursiv, Headway</span><span><b>Helps</b> Late Adopters, busy workers</span><span><b>Revenue</b> More active days, more renewals</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <h4 class="sub" data-reveal>What I would not copy</h4>
+    <div class="nots" data-reveal>
+      <div class="notc"><small>Coursiv</small><b>Teach 10+ AI tools</b><p>"Only Claude" is our position, we'd become a weaker Coursiv.</p></div>
+      <div class="notc"><small>Coursiv</small><b>A fear-heavy quiz</b><p>About half our users see AI as an opportunity, our results-led quiz already works better.</p></div>
+      <div class="notc"><small>Udemy</small><b>One-time payment as the main offer</b><p>Cuts renewal revenue, a longer plan solves "I hate subscriptions" instead.</p></div>
+      <div class="notc"><small>—</small><b>Competing with Anthropic on certificates</b><p>Can't beat free and official, point to it and win on guidance.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART C ============ -->
+<section class="part alt" id="part-c">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="tag"><span class="l">C</span>Challenge Release Verdict</div>
+      <h2 class="thesis">The challenge attracts users but <em>does not build a daily habit.</em></h2>
+    </div>
+
+    <div class="verdict" data-reveal>
+      <span class="stamp">● Verdict</span>
+      <h3>The release did not work.</h3>
+      <div class="vstats">
+        <div><span class="n">1 in 9</span><span class="d">subscribers start the challenge</span></div>
+        <div><span class="n" style="color:var(--no)">41%</span><span class="d">come back the next day</span></div>
+        <div><span class="n" style="color:var(--no)">43% <small style="font-size:.5em;color:var(--muted)">vs</small> 60%</span><span class="d">return after a challenge day vs a regular lesson day</span></div>
+        <div><span class="n" style="color:var(--no)">4%</span><span class="d">reach Day 7</span></div>
+      </div>
+      <p class="nextline">Users binge the first lessons in one sitting and stop, so the "daily" format never forms a habit. <b>Next:</b> keep the challenge, rebuild the loop, fix iOS, and relaunch as an A/B test on D1 after start.</p>
+    </div>
+
+    <details data-reveal>
+      <summary>Data and definitions</summary>
+      <div class="db">
+        <p>10,103 new subscribers.</p>
+        <div class="tw"><table class="t-mid"><thead><tr><th>Term</th><th>How I measured it</th></tr></thead><tbody>
+          <tr><td>Challenge</td><td>Course 338 "7-Day Claude Challenge": an Intro lesson plus 7 day-lessons (8 lessons)</td></tr>
+          <tr><td>Started</td><td>Fired pr_webapp_challenge_start (day 0)</td></tr>
+          <tr><td>Active day</td><td>Any app event on that calendar day (UTC)</td></tr>
+          <tr><td>D1 / D3 / D7</td><td>Active exactly 1 / 3 / 7 days after the first challenge start</td></tr>
+          <tr><td>Unsubscribe rate</td><td>Share with pr_webapp_unsubscribed within 7 days of their first app day (users who joined by 17 June)</td></tr>
+          <tr><td>Lesson completion rate</td><td>Lessons completed ÷ lessons started, all courses</td></tr>
+          <tr><td>CSAT</td><td>Average lesson rating (csat_score, 1–5) and the challenge's own rating screen</td></tr>
+        </tbody></table></div>
+        <p><b>Engagement groups.</b> High: started and completed 3+ challenge lessons, 157 users. Low: started but completed 0–2 challenge lessons, 957 users. None: never started, split into users who saw the pop-up and skipped it (2,100) and users who never saw it (6,742).</p>
+        <p><b>Why 3 lessons:</b> 82% of people who finish Day 1 do it in the same sitting as the Intro, so 2 lessons is still "one session". The third lesson is where repeat engagement begins.</p>
+        <p><b>Main warning.</b> There is no control group: the challenge was live for all users for the whole period. Engagement groups are self-selected, so comparing them shows correlation, not cause.</p>
+      </div>
+    </details>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 1a · How users move through the challenge</span>
+      <h3>The challenge loses users in the first sitting, not over the week.</h3>
+      <p>45% of starters never finish the Intro, and only 48 of 1,114 (4%) reach Day 7.</p>
+    </div>
+    <div class="chart" data-reveal>
+      <h5>Challenge funnel</h5>
+      <div class="hbars">
+        <div class="hb"><span class="lab">Saw the pop-up</span><div class="bar"><i style="--w:100%"></i><span class="in">3,140</span></div></div>
+        <div class="hb"><span class="lab">Started</span><div class="bar"><i style="--w:35.5%"></i><span style="--w:35.5%">1,114</span></div></div>
+        <div class="hb"><span class="lab">Finished the Intro</span><div class="bar"><i style="--w:19.5%"></i><span style="--w:19.5%">613<small>55% of starters</small></span></div></div>
+        <div class="hb"><span class="lab">Finished Day 1</span><div class="bar"><i style="--w:9.7%"></i><span style="--w:9.7%">306<small>27%</small></span></div></div>
+        <div class="hb"><span class="lab">Reached Day 7</span><div class="bar"><i class="warn" style="--w:1.5%"></i><span style="--w:1.5%">48<small>4%</small></span></div></div>
+      </div>
+      <p class="cap">BigQuery app_events · analyzed with help of Claude</p>
+    </div>
+    <ul class="bullets" data-reveal>
+      <li>1 in 3 users sees the pop-up, 1 in 9 of all subscribers starts (1,114 of 9,956).</li>
+      <li><b>82% of Day 1 finishers</b> (250 of 306) did it on the same day as the Intro.</li>
+      <li>Only 1 in 4 starters begin on their first app day, on average 2 days after joining.</li>
+      <li>Days 4–7 keep 76–94% of users at each step.</li>
+      <li>25 of 98 users rated the challenge, 17 downloaded and 15 shared the certificate.</li>
+    </ul>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 1b · How segments behave</span>
+      <h3>Who starts barely depends on age, job or goal (9–15% everywhere).</h3>
+      <p>Segments differ after the start: platform and age decide whether people go deep and come back.</p>
+    </div>
+    <div class="tw" data-reveal>
+      <table class="t-wide">
+        <thead><tr><th>Segment</th><th class="num">Users</th><th class="num">Start rate</th><th class="num">Finished Intro</th><th class="num">3+ lessons</th><th class="num">D1 after start</th></tr></thead>
+        <tbody>
+          <tr><td>Age 18–24</td><td class="num">913</td><td class="num">10%</td><td class="num">66%</td><td class="num">14%</td><td class="num">30%</td></tr>
+          <tr><td>Age 25–34</td><td class="num">1,117</td><td class="num">12%</td><td class="num">58%</td><td class="num">14%</td><td class="num">32%</td></tr>
+          <tr><td>Age 35–44</td><td class="num">1,887</td><td class="num">12%</td><td class="num">58%</td><td class="num">16%</td><td class="num"><b>48%</b></td></tr>
+          <tr><td>Age 45–54</td><td class="num">2,551</td><td class="num">11%</td><td class="num">54%</td><td class="num">17%</td><td class="num">42%</td></tr>
+          <tr><td>Age 55+</td><td class="num">3,200</td><td class="num">10%</td><td class="num">48%</td><td class="num"><b>9%</b></td><td class="num">41%</td></tr>
+          <tr><td>Employee</td><td class="num">4,197</td><td class="num">12%</td><td class="num">57%</td><td class="num">15%</td><td class="num">42%</td></tr>
+          <tr><td>Business owner</td><td class="num">1,920</td><td class="num">9%</td><td class="num">51%</td><td class="num">16%</td><td class="num">38%</td></tr>
+          <tr><td>Freelancer</td><td class="num">1,713</td><td class="num">12%</td><td class="num">52%</td><td class="num">14%</td><td class="num">45%</td></tr>
+          <tr><td>Exploring / between jobs</td><td class="num">1,427</td><td class="num">13%</td><td class="num">55%</td><td class="num">13%</td><td class="num">38%</td></tr>
+          <tr><td>Student</td><td class="num">175</td><td class="num">15%</td><td class="num">67%</td><td class="num">15%</td><td class="num">27%</td></tr>
+          <tr><td>Goal: income / business</td><td class="num">3,256</td><td class="num">12%</td><td class="num">57%</td><td class="num">16%</td><td class="num">43%</td></tr>
+          <tr><td>Goal: productivity</td><td class="num">3,356</td><td class="num">10%</td><td class="num">50%</td><td class="num">12%</td><td class="num">38%</td></tr>
+          <tr><td>Goal: AI confidence</td><td class="num">2,069</td><td class="num">10%</td><td class="num">54%</td><td class="num">13%</td><td class="num">44%</td></tr>
+          <tr><td>Goal: career</td><td class="num">1,275</td><td class="num">13%</td><td class="num">61%</td><td class="num">16%</td><td class="num">38%</td></tr>
+          <tr class="hl"><td>iOS app</td><td class="num">3,867</td><td class="num">9%</td><td class="num"><b>43%</b></td><td class="num"><b>4%</b></td><td class="num">33%</td></tr>
+          <tr><td>Web</td><td class="num">2,049</td><td class="num">9%</td><td class="num">57%</td><td class="num">15%</td><td class="num">27%</td></tr>
+          <tr><td>Untagged device (mostly other OS)</td><td class="num">4,040</td><td class="num">15%</td><td class="num">61%</td><td class="num">20%</td><td class="num">50%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" data-reveal>"Finished Intro" and "3+ lessons" are shares of starters. Profession = the status quiz answer, in 5 buckets, Finance and Sales roles (under 20 starters each) left out.</p>
+    <ul class="bullets" data-reveal>
+      <li><b>iOS:</b> 4% of iOS starters reach a third lesson vs 15–20% elsewhere, fewer than half finish the Intro.</li>
+      <li><b>55+</b> (1 in 3 users): start as often as others, but only 9% get past the first sitting.</li>
+      <li><b>18–34:</b> finish the Intro most often, but only 3 in 10 return the next day.</li>
+      <li><b>35–54, freelancers, "income" goal:</b> the best fit, about half of 35–44 starters return the next day.</li>
+      <li><b>Gender and plan length:</b> little difference (D1 36–45%), 1-week plan buyers are weaker (33%).</li>
+    </ul>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 1c · Engagement groups vs metrics</span>
+      <h3>Engaged users retain better, but the challenge is not what brings them back.</h3>
+      <p>Low-engagement starters (86% of starters) look the same as users who skipped the challenge, and the same people return less after a challenge day than after a normal lesson day.</p>
+    </div>
+    <div class="tw" data-reveal>
+      <table class="t-mid">
+        <thead><tr><th>Metric</th><th class="num">None: never saw pop-up</th><th class="num">None: skipped pop-up</th><th class="num">Low</th><th class="num">High</th></tr></thead>
+        <tbody>
+          <tr><td>Users</td><td class="num">6,742</td><td class="num">2,100</td><td class="num">957</td><td class="num">157</td></tr>
+          <tr><td>D1 after challenge start</td><td class="num">—</td><td class="num">—</td><td class="num">37%</td><td class="num">65%</td></tr>
+          <tr><td>D3 after challenge start</td><td class="num">—</td><td class="num">—</td><td class="num">23%</td><td class="num">54%</td></tr>
+          <tr><td>D7 after challenge start</td><td class="num">—</td><td class="num">—</td><td class="num">14%</td><td class="num">31%</td></tr>
+          <tr><td>Unsubscribed within 7 days</td><td class="num">12%</td><td class="num">20%</td><td class="num">10%</td><td class="num">8%</td></tr>
+          <tr><td>Lesson completion rate</td><td class="num">69%</td><td class="num">92%</td><td class="num">85%</td><td class="num">97%</td></tr>
+          <tr><td>Lesson CSAT, 1–5</td><td class="num">4.13</td><td class="num">4.23</td><td class="num">4.27</td><td class="num">4.28</td></tr>
+          <tr><td>Active days in the period</td><td class="num">1.3</td><td class="num">3.2</td><td class="num">3.5</td><td class="num">5.4</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" data-reveal>All starters together: D1 after start 41%, D3 27%, D7 16%. Only 14% of starters fall into High.</p>
+
+    <p class="lead" data-reveal style="margin-top:36px;font-size:1.05rem"><b>Like-for-like checks.</b> Pop-up viewers already had D1 of 52% vs 12% for non-viewers, so group gaps are mostly self-selection. I compared the same 1,114 starters on different kinds of days, and the 2,960 pop-up viewers from the day they first saw it.</p>
+    <div class="two" data-reveal style="margin-top:22px">
+      <div class="chart">
+        <h5>Same starters, different days</h5>
+        <div class="hbars">
+          <div class="hb"><span class="lab">After a regular-lesson-only day</span><div class="bar"><i style="--w:60%"></i><span style="--w:60%">60%</span></div></div>
+          <div class="hb"><span class="lab">After a challenge-only day</span><div class="bar"><i class="warn" style="--w:43%"></i><span style="--w:43%">43%</span></div></div>
+        </div>
+        <p class="cap">Next-day return · BigQuery app_events · generated with help of Claude</p>
+      </div>
+      <div class="chart">
+        <h5>Pop-up viewers, from the day they saw it</h5>
+        <div class="hbars">
+          <div class="hb"><span class="lab">Started the challenge</span><div class="bar"><i style="--w:44%"></i><span style="--w:44%">44%</span></div></div>
+          <div class="hb"><span class="lab">Didn't start</span><div class="bar"><i class="muted" style="--w:28%"></i><span style="--w:28%">28%</span></div></div>
+        </div>
+        <p class="cap">Next-day return · an upper bound on the effect</p>
+      </div>
+    </div>
+    <ul class="bullets" data-reveal>
+      <li><b>Same starters:</b> 43% return after a challenge-only day vs 60% after a regular-lesson-only day.</li>
+      <li><b>Pop-up viewers:</b> 44% next-day return for those who started vs 28% for those who didn't (an upper bound on the effect).</li>
+      <li><b>Unsubscribe within 7 days:</b> 10% for starters vs 20% for pop-up skippers (correlation).</li>
+      <li><b>CSAT:</b> flat at 4.1–4.3, 25 challenge ratings (average 4.2).</li>
+      <li><b>Exit reasons:</b> "I'll do it later" and "I need a break" (78 of 161), "not relevant" only 3.</li>
+    </ul>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 2 · Verdict</span>
+      <h3>No evidence it raises D1 retention. The hypothesis is not confirmed.</h3>
+    </div>
+    <div class="tw" data-reveal>
+      <table class="t-wide">
+        <thead><tr><th>Metric</th><th>Result</th><th>How I read it</th></tr></thead>
+        <tbody>
+          <tr class="key"><td>D1 after challenge start (target)</td><td><span class="big" style="color:var(--no)">41%</span> of starters</td><td>6 in 10 starters don't come back the next day</td></tr>
+          <tr><td>Next-day return, same users: challenge day vs lesson day</td><td><span class="big">43% vs 60%</span></td><td>The cleanest test available. A challenge day brings people back less</td></tr>
+          <tr><td>D7 from first app day, Low starters vs pop-up skippers</td><td><span class="big">19% vs 19%</span></td><td>For 86% of starters the challenge changes nothing by the end of week 1</td></tr>
+          <tr><td>Challenge completion</td><td><span class="big">4%</span> reach Day 7</td><td>The 7-day promise is kept by very few</td></tr>
+          <tr><td>Unsubscribe within 7 days</td><td><span class="big">10% vs 20%</span> starters vs skippers</td><td>The only positive signal, may be partly self-selection</td></tr>
+          <tr><td>Lesson completion rate</td><td><span class="big">85–97%</span> for starters</td><td>Same level as skippers (92%): no lift</td></tr>
+          <tr><td>CSAT</td><td><span class="big">4.2–4.3</span> everywhere</td><td>25 challenge ratings. No signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" data-reveal>There was no control group and no pre-launch period, so I can't give an exact uplift. All like-for-like checks point the same way.</p>
+
+    <h4 class="sub" data-reveal>Why it turned out this way</h4>
+    <div class="reasons" data-reveal>
+      <div class="reason"><b>Nothing makes it daily</b><p>Days unlock right away, 82% did Day 1 in the Intro sitting.</p></div>
+      <div class="reason"><b>Weak first session</b><p>45% quit in the setup Intro.</p></div>
+      <div class="reason"><b>Reward is 7 days away</b><p>Nothing marks Day 1 or Day 3.</p></div>
+      <div class="reason"><b>One path for all</b><p>Productivity-goal users start (10%) and return (38%) least.</p></div>
+      <div class="reason"><b>iOS</b><p>4% reach a third lesson vs 15–20% elsewhere.</p></div>
+      <div class="reason"><b>Late offer</b><p>3 in 4 starters begin 1+ days after joining.</p></div>
+    </div>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 3 · What's next</span>
+      <h3>Seven changes, each tied to a number from the data.</h3>
+    </div>
+    <div class="tw" data-reveal>
+      <table class="t-wide">
+        <thead><tr><th>Change</th><th>Why (from the data)</th><th>Target</th></tr></thead>
+        <tbody>
+          <tr><td>1. Time-gate the days<small class="muted">Next day unlocks the next morning, with a countdown and a teaser</small></td><td>82% binge Day 1 with the Intro, then stop</td><td><span class="arrow">D1 <s>41%</s><i>→</i>50%</span></td></tr>
+          <tr><td>2. Commit at the start<small class="muted">User picks a daily time, push or email when the next day opens</small></td><td>Exits say "I'll do it later": give "later" a time</td><td>More users back the next day</td></tr>
+          <tr><td>3. Quick win instead of setup<small class="muted">A 3-minute in-app task using the AI Playground, setup moves to the end</small></td><td>45% quit in the Intro</td><td><span class="arrow">Intro <s>55%</s><i>→</i>75%</span></td></tr>
+          <tr><td>4. Streak with a free pass<small class="muted">One missed day forgiven, catch up 2 lessons in one day instead of a hard lock</small></td><td>Doesn't punish missed days</td><td><span class="arrow">D3 <s>27%</s><i>→</i>35%</span></td></tr>
+          <tr><td>5. Rewards along the way<small class="muted">Badges on Day 1 and 3, a shareable progress card on Day 3</small></td><td>Only reward is 7 days away, 15 users shared</td><td>More users past Day 3</td></tr>
+          <tr><td>6. Personal track<small class="muted">Role and goal at start (already in the quiz), daily tasks use role examples</small></td><td>Productivity users are weakest, one path for all</td><td><span class="arrow">Start <s>11%</s><i>→</i>14%</span></td></tr>
+          <tr><td>7. Fix iOS and offer on day 0<small class="muted">Audit the iOS flow, show the offer at the end of onboarding</small></td><td>4% of iOS starters reach lesson 3, 3 in 4 start late</td><td><span class="arrow">iOS 3+ <s>4%</s><i>→</i>15%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" data-reveal><b>What to remove:</b> the pop-up "Not now" dead end (replace with "Remind me tomorrow"), and the CSAT screen after Day 3 that only 25 people answered (one tap at the end of each day instead).</p>
+
+    <h4 class="sub" data-reveal>How to test it</h4>
+    <div class="spec" data-reveal>
+      <div><small>Split</small><p>50/50 of new subscribers, current challenge vs v2. Fix iOS for both groups first, so the test measures the mechanics, not the bug.</p></div>
+      <div><small>Primary metric</small><p>D1 after challenge start. Guardrails: unsubscribe within 7 days and D7.</p></div>
+      <div><small>Size</small><p>About 1,100 starters per group detects 41% → 47% D1, at ~110 starters a day, about 3 weeks.</p></div>
+      <div><small>Ship order</small><p>1 + 2 + 3 first (the biggest losses), then 4–6.</p></div>
+    </div>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 4 · Prototype</span>
+    </div>
+    <div class="proto" data-reveal>
+      <div>
+        <h4>Challenge v2, built in Lovable.</h4>
+        <p>The core flow turns "7 lessons" into one small win a day, with a reason to come back tomorrow.</p>
+        <a class="btn btn-primary" href="https://claude-challenge-v2.lovable.app" target="_blank" rel="noopener">Open claude-challenge-v2.lovable.app ↗</a>
+      </div>
+      <div>
+        <ol class="flow">
+          <li>Offer at the end of onboarding, with "Remind me tomorrow" instead of "Not now".</li>
+          <li>Personalize: pick role and goal, the 7-day plan rewrites itself with examples for that role.</li>
+          <li>Commit: pick a daily time and push or email reminders.</li>
+          <li>Day 1 is a 3-minute quick win in a mini AI playground, not account setup.</li>
+          <li>Celebration: badge, streak, and a "Day 2 unlocks tomorrow at 9:00" countdown with a teaser.</li>
+          <li>Challenge home: done, today, tomorrow and locked days, a free pass for one missed day, 2-day catch-up if the streak breaks.</li>
+          <li>Day 3 badge with a shareable progress card and a one-tap rating, certificate after Day 7.</li>
+        </ol>
+      </div>
+    </div>
+    <h4 class="sub" data-reveal>How it fixes what the data showed</h4>
+    <div class="tw" data-reveal>
+      <table class="t-wide">
+        <thead><tr><th>Problem in v1</th><th>What the prototype does</th><th>Metric it should move</th></tr></thead>
+        <tbody>
+          <tr><td>82% binge Day 1 with the Intro, then leave</td><td>One new day per calendar day, countdown and teaser</td><td><span class="chip info">D1 after start</span></td></tr>
+          <tr><td>"I'll do it later" is the top exit reason</td><td>User picks a time, reminder fires when the next day opens</td><td><span class="chip info">D1, D3</span></td></tr>
+          <tr><td>45% quit in the setup Intro</td><td>Day 1 starts with a real result in 3 minutes</td><td><span class="chip info">Intro completion</span></td></tr>
+          <tr><td>Only reward is 7 days away</td><td>Badges on Day 1 and 3, share card on Day 3</td><td><span class="chip info">Reaching Day 3</span></td></tr>
+          <tr><td>A missed day ends the run</td><td>Free pass and 2-day catch-up</td><td><span class="chip info">D3, D7</span></td></tr>
+          <tr><td>Same path for every role</td><td>Role-based examples for all 7 days</td><td><span class="chip info">Start rate, D1</span></td></tr>
+          <tr><td>25 CSAT answers in total</td><td>One-tap rating at the end of a day</td><td><span class="chip info">Feedback volume</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART D ============ -->
+<section class="part" id="part-d">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="tag"><span class="l">D</span>Subscription Economics</div>
+      <h2 class="thesis">The hypothesis is wrong, but <em>the test is worth running.</em></h2>
+      <p class="lead">A 4-week subscriber moved to 12 weeks brings less renewal revenue over a year ($89.43 vs $95.98), only the $49.99 fee makes it pay. Break-even conversion is 8.3%, below the 12% the second upsell already gets.</p>
+    </div>
+
+    <div class="stats" data-reveal>
+      <div class="stat bad"><span class="n">$89.43</span><span class="t">12-week renewals in a year</span><span class="d">vs $95.98 on the 4-week plan</span></div>
+      <div class="stat"><span class="n">+$43.44</span><span class="t">gain per upgrade buyer</span><span class="d">49.99 + 89.43 − 95.98, gross</span></div>
+      <div class="stat"><span class="n">8.3%</span><span class="t">break-even conversion</span><span class="d">Same on a net basis</span></div>
+      <div class="stat"><span class="n">12%</span><span class="t">upsell 2 converts today</span><span class="d">The checkout slot the upgrade takes</span></div>
+    </div>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 1 · Total LTV</span>
+      <h3>Blended LTV: $136.07 gross, $119.74 net.</h3>
+      <p><b>Method.</b> Every subscriber pays the intro price (period 0). The share still paying in period n is S<sub>n</sub> = C01 × C12 × … × C(n−1)n. Subscription revenue = intro price + recurring price × ΣS<sub>n</sub>, counting renewals that start within 52 weeks. Upsells = conversion × price, paid once at checkout. Net = Gross × 0.88.</p>
+    </div>
+    <div class="spec spec-3" data-reveal>
+      <div><small>1-week plan</small><p>Renewals at weeks 1, 5, … 45 = 12 renewals (C01–C1112). A 13th at week 49 has no C1213 in the table, at an assumed 80% it would add only +$0.58 net, so it is left out.</p></div>
+      <div><small>4-week plan</small><p>Weeks 4, 8, … 48 = exactly 12 (C01–C1112).</p></div>
+      <div><small>12-week plan</small><p>Weeks 12, 24, 36, 48 = 4 (C01–C34).</p></div>
+    </div>
+    <div class="two" data-reveal style="margin-top:18px">
+      <div class="tw">
+        <table>
+          <thead><tr><th></th><th class="num">1-week</th><th class="num">4-week</th><th class="num">12-week</th></tr></thead>
+          <tbody>
+            <tr><td>ΣS (expected renewals)</td><td class="num">1.5257</td><td class="num">2.4001</td><td class="num">1.4198</td></tr>
+            <tr><td>Intro, $</td><td class="num">6.93</td><td class="num">19.99</td><td class="num">39.99</td></tr>
+            <tr><td>Recurring (price × ΣS), $</td><td class="num">61.01</td><td class="num">95.98</td><td class="num">89.43</td></tr>
+            <tr><td>Upsell 1 (30% × price), $</td><td class="num">0.60</td><td class="num">21.00</td><td class="num">21.00</td></tr>
+            <tr><td>Upsell 2 (12% × price), $</td><td class="num">0.12</td><td class="num">3.60</td><td class="num">3.60</td></tr>
+            <tr><td>Gross LTV, $</td><td class="num"><b>68.66</b></td><td class="num"><b>140.57</b></td><td class="num"><b>154.02</b></td></tr>
+            <tr class="key"><td>Net LTV (× 0.88), $</td><td class="num">60.42</td><td class="num">123.70</td><td class="num">135.53</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="chart">
+        <h5>Net LTV per subscriber</h5>
+        <div class="hbars">
+          <div class="hb"><span class="lab">1-week · 10% of mix</span><div class="bar"><i class="muted" style="--w:44.6%"></i><span style="--w:44.6%">$60.42</span></div></div>
+          <div class="hb"><span class="lab">4-week · 70%</span><div class="bar"><i style="--w:91.3%"></i><span class="in">$123.70</span></div></div>
+          <div class="hb"><span class="lab">12-week · 20%</span><div class="bar"><i style="--w:100%"></i><span class="in">$135.53</span></div></div>
+          <div class="hb"><span class="lab"><b>Blended</b></span><div class="bar"><i style="--w:88.3%;background:var(--ink)"></i><span class="in" style="color:var(--bg)">$119.74</span></div></div>
+        </div>
+        <p class="cap">Blended = 0.10 × 68.66 + 0.70 × 140.57 + 0.20 × 154.02 = $136.07 gross, $119.74 net</p>
+      </div>
+    </div>
+    <p class="note" data-reveal>4-week survival curve: 0.67, 0.436, 0.305, 0.229, 0.183, 0.146, 0.117, 0.094, 0.075, 0.060, 0.048, 0.038. Prices are the ones given in the assignment, the live paywall I saw in Part A showed lower, discounted prices.</p>
+
+    <div class="task" data-reveal>
+      <span class="k">Task 2 · Plan Upgrade A/B model</span>
+      <h3>The upgrade breaks even at 8.3% conversion.</h3>
+      <p>The test only touches 4-week subscribers (70% of the mix). The upgrade offer takes the second upsell's checkout slot. Let x be the upgrade purchase conversion.</p>
+    </div>
+    <div class="two" data-reveal>
+      <div class="tile"><small class="kk">Control 4-week gross</small><p class="mono">19.99 + 21.00 + 3.60 + 95.98 = <b>140.57</b></p></div>
+      <div class="tile"><small class="kk">Test 4-week gross</small><p class="mono">19.99 + 21.00 + x × (49.99 + 89.43) + (1 − x) × 95.98</p></div>
+    </div>
+    <p class="note" data-reveal>89.43 is the 12-week renewal stream (4 renewals at $62.99 on the 12-week curve). Each buyer gains 49.99 + 89.43 − 95.98 = <b>+$43.44 gross</b>. Every 4-week subscriber in the test loses the second upsell, worth <b>−$3.60</b>.</p>
+    <div class="formula" data-reveal style="margin-top:22px">
+      <span class="x">x*</span><span class="x">=</span>
+      <span class="frac"><span>$3.60 lost upsell per subscriber</span><span>$43.44 gained per buyer</span></span>
+      <span class="x">≈</span><span class="eq">8.28%</span>
+      <small>The store fee is a flat 12%, so break-even is the same on a net basis.</small>
+    </div>
+
+    <div class="two" data-reveal style="margin-top:18px">
+      <div class="chart">
+        <h5>Blended net LTV change vs upgrade conversion</h5>
+        <div class="svgbox">
+          <svg viewBox="0 0 640 300" role="img" aria-label="Line chart: blended net LTV change rises from minus 1.9% at 0% conversion to plus 4.9% at 30%, crossing zero at 8.3%">
+            <g stroke="var(--line)" stroke-width="1">
+              <line x1="50" y1="65" x2="620" y2="65"/><line x1="50" y1="125" x2="620" y2="125"/><line x1="50" y1="245" x2="620" y2="245"/>
+            </g>
+            <line x1="50" y1="185" x2="620" y2="185" stroke="var(--muted)" stroke-width="1.5"/>
+            <g fill="var(--muted)" font-size="12" text-anchor="end">
+              <text x="42" y="69">+4%</text><text x="42" y="129">+2%</text><text x="42" y="189">0</text><text x="42" y="249">−2%</text>
+            </g>
+            <g fill="var(--muted)" font-size="12" text-anchor="middle">
+              <text x="50" y="278">0%</text><text x="145" y="278">5%</text><text x="240" y="278">10%</text><text x="335" y="278">15%</text><text x="430" y="278">20%</text><text x="525" y="278">25%</text><text x="620" y="278">30%</text>
+            </g>
+            <text x="335" y="297" fill="var(--muted)" font-size="11" text-anchor="middle">Upgrade purchase conversion</text>
+            <path d="M50,185 L50,242 L145,206 L207.7,185 Z" fill="var(--no)" opacity=".14"/>
+            <path d="M207.7,185 L240,173 L278,161 L335,140 L430,107 L620,38 L620,185 Z" fill="var(--blue)" opacity=".12"/>
+            <line x1="207.7" y1="30" x2="207.7" y2="260" stroke="var(--ink)" stroke-width="1" stroke-dasharray="4 4"/>
+            <text x="214" y="42" fill="var(--ink)" font-size="12" font-weight="700">Break-even 8.3%</text>
+            <line x1="278" y1="161" x2="278" y2="260" stroke="var(--blue)" stroke-width="1" stroke-dasharray="2 4"/>
+            <text x="284" y="228" fill="var(--blue)" font-size="11.5" font-weight="700">12% = upsell 2 today</text>
+            <polyline points="50,242 145,206 207.7,185 240,173 278,161 335,140 430,107 620,38" fill="none" stroke="var(--blue)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+            <g fill="var(--card)" stroke="var(--blue)" stroke-width="2.5">
+              <circle cx="50" cy="242" r="4.5"/><circle cx="145" cy="206" r="4.5"/><circle cx="240" cy="173" r="4.5"/><circle cx="278" cy="161" r="4.5"/><circle cx="335" cy="140" r="4.5"/><circle cx="430" cy="107" r="4.5"/><circle cx="620" cy="38" r="5.5" fill="var(--blue)"/>
+            </g>
+            <circle cx="207.7" cy="185" r="6" fill="var(--ink)"/>
+            <text x="58" y="236" fill="var(--no)" font-size="12" font-weight="700">−1.9%</text>
+            <text x="612" y="30" fill="var(--blue)" font-size="12" font-weight="700" text-anchor="end">+4.9%</text>
+          </svg>
+        </div>
+      </div>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Upgrade conv.</th><th class="num">4-wk net, $</th><th class="num">Δ, $</th><th class="num">Blended net, $</th><th class="num">Δ</th></tr></thead>
+          <tbody>
+            <tr><td>0%</td><td class="num">120.53</td><td class="num">−3.17</td><td class="num">117.52</td><td class="num">−1.9%</td></tr>
+            <tr><td>5%</td><td class="num">122.44</td><td class="num">−1.26</td><td class="num">118.86</td><td class="num">−0.7%</td></tr>
+            <tr class="key"><td>8.3% (break-even)</td><td class="num">123.70</td><td class="num">0.00</td><td class="num">119.74</td><td class="num">0.0%</td></tr>
+            <tr><td>10%</td><td class="num">124.35</td><td class="num">+0.66</td><td class="num">120.20</td><td class="num">+0.4%</td></tr>
+            <tr><td>12% (= upsell 2)</td><td class="num">125.12</td><td class="num">+1.42</td><td class="num">120.73</td><td class="num">+0.8%</td></tr>
+            <tr><td>15%</td><td class="num">126.27</td><td class="num">+2.57</td><td class="num">121.53</td><td class="num">+1.5%</td></tr>
+            <tr><td>20%</td><td class="num">128.18</td><td class="num">+4.48</td><td class="num">122.87</td><td class="num">+2.6%</td></tr>
+            <tr><td>30%</td><td class="num">132.00</td><td class="num">+8.30</td><td class="num">125.55</td><td class="num">+4.9%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout" data-reveal>
+      <span class="k">Recommendation</span>
+      <blockquote>Run the test, but treat it as a test of a $49.99 one-time offer, not of the idea that "longer plans are worth more".</blockquote>
+      <p><b>Why run it.</b> Break-even (8.3%) is below the 12% this checkout slot already converts at. The worst case (0%) costs ~$2.22 of blended net LTV per subscriber, at 12–20% the upside is +0.8% to +2.6%.</p>
+      <p><b>Why the hypothesis fails.</b> Without the fee, an upgrade loses $6.55 per buyer: the 12-week plan's early churn (C01 = 64%, C12 = 57%) is worth less than the 4-week plan's long 80% tail.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="me"><img src="data:image/png;base64,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" alt=""><div><b>Karim Zharbulov</b><span>Product Manager Intern · Test assignment for Jobescape · October 2026</span></div></div>
+    <a class="btn btn-primary" href="#top">Back to top ↑</a>
+  </div>
+</footer>
+</main>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function(id){ return document.getElementById(id); };
+  var all = function(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); };
+  var EZ = { snap:'cubic-bezier(.76,0,.24,1)', out:'cubic-bezier(.16,1,.3,1)', back:'cubic-bezier(.34,1.56,.64,1)', io:'cubic-bezier(.65,0,.35,1)' };
+
+  // ---------- animation helpers ----------
+  var anims = [], timers = [];
+  function A(el, kf, o){ var a = el.animate(kf, Object.assign({fill:'backwards'}, o)); anims.push(a); return a; }
+  // T(): keyframes on an absolute timeline, frames carry t (ms)
+  function T(el, frames, extra){
+    var t0 = frames[0].t, t1 = frames[frames.length-1].t, d = Math.max(1, t1 - t0);
+    var kf = frames.map(function(f){ var k = Object.assign({}, f); delete k.t; k.offset = (f.t - t0) / d; return k; });
+    return A(el, kf, Object.assign({delay:t0, duration:d}, extra || {}));
+  }
+  function stopAll(){
+    anims.forEach(function(a){ try{ a.cancel(); }catch(e){} });
+    anims = []; timers.forEach(clearTimeout); timers = [];
+  }
+  function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
+
+  // ---------- measure ----------
+  function ctx(){
+    var c = { lockup:$('lockup'), tile:$('tile'), tov:$('tov'), pa:$('pa'), pb:$('pb'), wrap:$('wmWrap'), wm:$('wm'), caret:$('caret'),
+      giant:$('giant'), gfill:$('gFill'), role:$('heroRole'), parts:$('heroParts'), cue:$('scrollCue'), stage:document.querySelector('.stage') };
+    c.letters = Array.prototype.slice.call(c.wm.querySelectorAll('.wl'));
+    c.words = all('#heroName .wd'); c.c1 = all('.cols.c1 i'); c.c2 = all('.cols.c2 i');
+    var sr = c.stage.getBoundingClientRect(), lr = c.lockup.getBoundingClientRect(), wr = c.wrap.getBoundingClientRect();
+    c.vw = sr.width; c.W = wr.width; c.tileW = c.tile.getBoundingClientRect().width;
+    c.edges = c.letters.map(function(l){ return Math.ceil(l.getBoundingClientRect().right - wr.left) + 2; });
+    c.S = c.vw < 600 ? 1.25 : 1.55;
+    c.dy = (sr.top + sr.height/2) - (lr.top + lr.height/2);
+    c.C = 'translateY(' + c.dy + 'px) scale(' + c.S + ')';
+    c.gW = c.giant.offsetWidth;
+    c.gk = parseFloat(getComputedStyle(c.wm).fontSize) / parseFloat(getComputedStyle(c.giant).fontSize) * c.S;
+    return c;
+  }
+
+  // ---------- scenes: each returns the time (ms) when the lockup is complete ----------
+  var scenes = {};
+
+  // 1. Zoom: giant outlined letters pan past, fill in, then shrink into the lockup
+  scenes.zoom = function(c){
+    var x0 = c.vw * 0.25, x1 = -(c.gW - c.vw * 0.8);
+    var xc = c.vw/2 + (c.tileW * c.S)/2 - (c.gW * c.gk)/2;
+    T(c.giant, [
+      {t:0, opacity:0, transform:'translate('+x0+'px,-50%) scale(1)'},
+      {t:180, opacity:1, transform:'translate('+(x0 - (x0-x1)*0.08)+'px,-50%) scale(1)', easing:'cubic-bezier(.33,0,.67,1)'},
+      {t:1500, opacity:1, transform:'translate('+x1+'px,-50%) scale(1)', easing:EZ.snap},
+      {t:2050, opacity:1, transform:'translate('+xc+'px,-50%) scale('+c.gk+')', easing:'ease-out'},
+      {t:2250, opacity:0, transform:'translate('+xc+'px,-50%) scale('+c.gk+')'}
+    ]);
+    T(c.gfill, [{t:0, clipPath:'inset(0 100% 0 0)'},{t:650, clipPath:'inset(0 100% 0 0)', easing:'cubic-bezier(.5,0,.3,1)'},{t:1450, clipPath:'inset(0 0% 0 0)'},{t:2250, clipPath:'inset(0 0% 0 0)'}]);
+    T(c.tile, [{t:0, transform:'scale(0)'},{t:1850, transform:'scale(0)', easing:EZ.back},{t:2300, transform:'scale(1)'}]);
+    T(c.wm, [{t:0, opacity:0},{t:2000, opacity:0, easing:'ease-out'},{t:2250, opacity:1}]);
+    return 2500;
+  };
+
+  // 2. Type: a thin bar grows into the tile, the mark bounces in, the name types out
+  scenes.type = function(c){
+    T(c.tile, [
+      {t:0, transform:'scale(.07,0)', borderRadius:'10px', easing:EZ.out},
+      {t:380, transform:'scale(.07,1)', borderRadius:'10px'},
+      {t:620, transform:'scale(.07,1)', borderRadius:'10px', easing:EZ.snap},
+      {t:1020, transform:'scale(1,1)', borderRadius:'24%'}
+    ]);
+    T(c.tov, [{t:0, opacity:1},{t:900, opacity:1, easing:'ease-out'},{t:1150, opacity:0}]);
+    [c.pa, c.pb].forEach(function(p, i){
+      var o = i * 50;
+      T(p, [{t:0, transform:'scale(0)'},{t:1000+o, transform:'scale(0)', easing:EZ.out},{t:1240+o, transform:'scale(1.28)', easing:'ease-in-out'},{t:1400+o, transform:'scale(.88)', easing:'ease-in-out'},{t:1540+o, transform:'scale(1.06)', easing:'ease-in-out'},{t:1660+o, transform:'scale(1)'}]);
+    });
+    var start = 1700, step = 75, frames = [{t:0, maxWidth:'0px'},{t:start, maxWidth:'0px'}];
+    c.edges.forEach(function(e, i){ frames.push({t:start + step*(i+1), maxWidth:e+'px'}); });
+    frames.forEach(function(f){ f.easing = 'step-end'; });
+    var end = start + step * c.edges.length;
+    frames.push({t:end + 400, maxWidth:(c.W+2)+'px'});
+    T(c.wrap, frames);
+    T(c.caret, [{t:0, opacity:0},{t:start-40, opacity:0, easing:'step-end'},{t:end+120, opacity:1, easing:'step-end'},{t:end+300, opacity:0, easing:'step-end'},{t:end+480, opacity:1, easing:'step-end'},{t:end+660, opacity:0}]);
+    return end + 700;
+  };
+
+  // 3. Color: columns flip blue, then white, the logo inverts on each, then they lift away
+  scenes.color = function(c){
+    T(c.tile, [{t:0, transform:'scale(0)', easing:EZ.back},{t:480, transform:'scale(1)'}]);
+    c.letters.forEach(function(l, i){ A(l, [{transform:'translateY(.45em)', opacity:0},{transform:'none', opacity:1}], {duration:500, delay:160 + i*28, easing:EZ.out}); });
+    var g = 55;
+    c.c1.forEach(function(col, i){
+      T(col, [{t:0, transform:'scaleY(0)', transformOrigin:'50% 100%'},{t:620+i*g, transform:'scaleY(0)', transformOrigin:'50% 100%', easing:EZ.snap},{t:1060+i*g, transform:'scaleY(1)', transformOrigin:'50% 100%'},{t:1950+i*g, transform:'scaleY(1)', transformOrigin:'50% 0%', easing:EZ.snap},{t:2400+i*g, transform:'scaleY(0)', transformOrigin:'50% 0%'}]);
+    });
+    c.c2.forEach(function(col, i){
+      T(col, [{t:0, transform:'scaleY(0)', transformOrigin:'50% 100%'},{t:1280+i*g, transform:'scaleY(0)', transformOrigin:'50% 100%', easing:EZ.snap},{t:1720+i*g, transform:'scaleY(1)', transformOrigin:'50% 100%'},{t:1950+i*g, transform:'scaleY(1)', transformOrigin:'50% 0%', easing:EZ.snap},{t:2400+i*g, transform:'scaleY(0)', transformOrigin:'50% 0%'}]);
+    });
+    T(c.tov, [{t:0, opacity:0},{t:860, opacity:0},{t:960, opacity:1},{t:1520, opacity:1},{t:1620, opacity:0}]);
+    [c.pa, c.pb].forEach(function(p){ T(p, [{t:0, fill:'#ffffff'},{t:860, fill:'#ffffff'},{t:960, fill:'#2B62EA'},{t:1520, fill:'#2B62EA'},{t:1620, fill:'#ffffff'}]); });
+    T(c.wm, [{t:0, color:'#ffffff'},{t:1520, color:'#ffffff'},{t:1620, color:'#0B1A3A'},{t:1980, color:'#0B1A3A'},{t:2160, color:'#ffffff'}]);
+    return 2650;
+  };
+
+  // 4. Sweep: a ghost wordmark lights up as a white square sweeps across it and becomes the tile
+  scenes.sweep = function(c){
+    var n = c.letters.length;
+    c.letters.forEach(function(l, i){
+      var pass = 520 + (1 - (i + .5)/n) * 700;
+      T(l, [{t:0, opacity:0},{t:260, opacity:.2},{t:pass, opacity:.2, easing:'ease-out'},{t:pass+220, opacity:1}]);
+    });
+    var X = c.W + c.tileW * 0.2;
+    T(c.tile, [
+      {t:0, transform:'translateX('+X+'px) scale(0)', easing:EZ.back},
+      {t:420, transform:'translateX('+X+'px) scale(.5)', easing:EZ.io},
+      {t:1300, transform:'translateX(0px) scale(.5)', easing:EZ.back},
+      {t:1650, transform:'translateX(0px) scale(1)'}
+    ]);
+    T(c.tov, [{t:0, opacity:1},{t:1350, opacity:1, easing:'ease-out'},{t:1600, opacity:0}]);
+    T(c.pa, [{t:0, transform:'translate(-170px,-90px)', opacity:0},{t:1420, transform:'translate(-170px,-90px)', opacity:0, easing:EZ.out},{t:1900, transform:'none', opacity:1}]);
+    T(c.pb, [{t:0, transform:'translate(170px,90px)', opacity:0},{t:1470, transform:'translate(170px,90px)', opacity:0, easing:EZ.out},{t:1950, transform:'none', opacity:1}]);
+    return 2150;
+  };
+
+  // 5. Spin: dot grows into the tile, the two halves spin in and lock, the wordmark slides out
+  scenes.spin = function(c){
+    A(c.tile, [
+      {transform:'scale(0)', borderRadius:'50%'},
+      {transform:'scale(.22)', borderRadius:'50%', offset:.35},
+      {transform:'scale(1.1)', borderRadius:'32%', offset:.75},
+      {transform:'scale(1)', borderRadius:'24%'}
+    ], {duration:820, easing:EZ.out});
+    A(c.pa, [{transform:'rotate(-200deg) scale(.4)', opacity:0},{opacity:1, offset:.3},{transform:'rotate(10deg) scale(1.02)', offset:.8},{transform:'none', opacity:1}], {duration:900, delay:380, easing:EZ.out});
+    A(c.pb, [{transform:'rotate(200deg) scale(.4)', opacity:0},{opacity:1, offset:.3},{transform:'rotate(10deg) scale(1.02)', offset:.8},{transform:'none', opacity:1}], {duration:900, delay:430, easing:EZ.out});
+    A(c.tile, [{transform:'scale(1)'},{transform:'scale(.9)', offset:.35},{transform:'scale(1)'}], {duration:380, delay:1180, easing:'ease-out', composite:'add', fill:'none'});
+    A(c.wrap, [{maxWidth:'0px'},{maxWidth:Math.ceil(c.W)+'px'}], {duration:780, delay:1450, easing:EZ.snap});
+    c.letters.forEach(function(l, i){ A(l, [{transform:'translateX(-.9em)', opacity:0},{transform:'none', opacity:1}], {duration:620, delay:1520 + i*34, easing:EZ.out}); });
+    return 2350;
+  };
+
+  // ---------- settle: lockup rises, role + name are revealed ----------
+  function settle(c, T0){
+    T(c.lockup, [{t:0, transform:c.C},{t:T0, transform:c.C, easing:EZ.snap},{t:T0+1000, transform:'none'}]);
+    A(c.role, [{transform:'translateY(16px)', opacity:0},{transform:'none', opacity:1}], {duration:700, delay:T0+550, easing:EZ.out});
+    c.words.forEach(function(w, i){ A(w, [{transform:'translateY(125%)'},{transform:'none'}], {duration:1000, delay:T0+650+i*110, easing:EZ.out}); });
+    A(c.parts, [{transform:'translateY(14px)', opacity:0},{transform:'none', opacity:1}], {duration:700, delay:T0+1100, easing:EZ.out});
+    A(c.cue, [{opacity:0},{opacity:1}], {duration:600, delay:T0+1450});
+  }
+  function holdAndFade(c, T0){
+    T(c.lockup, [{t:0, transform:c.C, opacity:1},{t:T0+650, transform:c.C, opacity:1, easing:'ease-in'},{t:T0+950, transform:c.C+' translateY(-12px)', opacity:0}], {fill:'both'});
+    return T0 + 1000;
+  }
+
+  var panel = $('panel'), ic = $('introContent');
+  var ORDER = ['zoom','type','color','sweep','spin'];
+  function play(name, keepScroll){
+    stopAll();
+    if (ic) ic.classList.remove('wait');
+    if (!Element.prototype.animate) return;
+    if (!keepScroll) { try { window.scrollTo({top:0, behavior:'instant'}); } catch(e){ window.scrollTo(0,0); } }
+    if (name !== 'all') { panel.classList.remove('reeling'); var c = ctx(); settle(c, scenes[name](c)); return; }
+    var i = 0;
+    (function next(){
+      stopAll();
+      var last = i === ORDER.length - 1;
+      panel.classList.toggle('reeling', !last);
+      var c = ctx(), T0 = scenes[ORDER[i]](c);
+      if (last) { settle(c, T0); return; }
+      var dur = holdAndFade(c, T0); i++;
+      later(next, dur + 120);
+    })();
+  }
+
+  // ---------- boot ----------
+  var wm = $('wm');
+  if (wm) wm.innerHTML = wm.textContent.split('').map(function(ch){ return '<span class="wl">'+ch+'</span>'; }).join('') + '<span class="caret" id="caret" aria-hidden="true"></span>';
+  // caret must sit in the wrap (it marks the typing edge), not inside the text
+  var caret = $('caret'); if (caret) $('wmWrap').appendChild(caret);
+
+  var current = 'color';
+  var fxBtns = all('.fx button');
+  function mark(){ fxBtns.forEach(function(b){ b.classList.toggle('on', b.dataset.fx === current); }); }
+  fxBtns.forEach(function(b){ b.addEventListener('click', function(){ current = b.dataset.fx; mark(); play(current); }); });
+  mark();
+  if (reduce) { var fx = document.querySelector('.fx'); if (fx) fx.hidden = true; }
+  var started = false;
+  function go(){
+    if (started) return;
+    if (document.visibilityState === 'hidden') { document.addEventListener('visibilitychange', function v(){ if (document.visibilityState !== 'hidden') { document.removeEventListener('visibilitychange', v); go(); } }); return; }
+    started = true; play(current);
+  }
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(go); setTimeout(go, 1200); } else { go(); }
+  // replay the intro every time the reader scrolls back up to the top
+  var armed = false;
+  function checkReplay(y, vh){
+    if (y > vh * 0.6) armed = true;
+    else if (armed && y < vh * 0.04 && started) { armed = false; play(current, true); }
+  }
+
+  // ---------- scroll: shrink stage, nav, progress, active link ----------
+  var nav = $('nav'), bar = $('progress');
+  var links = all('.nav-links a');
+  var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  var ticking = false;
+  function onScroll(){
+    ticking = false;
+    var y = window.scrollY || window.pageYOffset, vh = window.innerHeight;
+    var p = Math.min(1, Math.max(0, y / (vh * 0.55)));
+    if (panel) panel.style.setProperty('--p', reduce ? 0 : p.toFixed(4));
+    if (nav) nav.classList.toggle('show', y > vh * 0.9);
+    checkReplay(y, vh);
+    var max = document.documentElement.scrollHeight - vh;
+    if (bar) bar.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+    var cur = -1;
+    secs.forEach(function(s, idx){ if (s && s.getBoundingClientRect().top < vh * 0.35) cur = idx; });
+    links.forEach(function(a, idx){ a.classList.toggle('on', idx === cur); });
+  }
+  window.addEventListener('scroll', function(){ if (!ticking){ ticking = true; requestAnimationFrame(onScroll); } }, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  // ---------- reveal: only elements below the first screen start hidden ----------
+  var els = all('[data-reveal]');
+  if (!reduce && 'IntersectionObserver' in window) {
+    var vh0 = window.innerHeight;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting){ e.target.classList.remove('is-pre'); io.unobserve(e.target); } });
+    }, {rootMargin:'0px 0px -8% 0px', threshold:0.06});
+    els.forEach(function(el){ if (el.getBoundingClientRect().top > vh0) { el.classList.add('is-pre'); io.observe(el); } });
+  }
+})();
+</script>
+
+</body>
+</html>
