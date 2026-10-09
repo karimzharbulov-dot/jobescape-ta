@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finelo Motion Spot</title>
+<style>
+/* 1080x1920 (9:16) motion spot. Every frame is a pure function of time: window.render(t).
+   Opened normally it plays in a loop; render.mjs drives it frame by frame to make the MP4. */
+@font-face{font-family:"Outfit";src:url(assets/outfit.woff2) format("woff2");font-weight:100 900;font-display:block}
+:root{
+  --purple:#5554F6;
+  --purple-deep:#3B39D9;
+  --green:#62C234;
+  --white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#111;height:100%}
+body{display:flex;align-items:center;justify-content:center;overflow:hidden;font-family:"Outfit",system-ui,sans-serif}
+body.rendering{display:block;background:var(--purple)}
+#wrap{width:1080px;height:1920px;transform-origin:center;flex:none}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--purple);color:var(--white)}
+.abs{position:absolute;left:0;top:0;will-change:transform,opacity}
+
+/* background */
+#glow{inset:0;width:100%;height:100%;
+  background:radial-gradient(1200px 1000px at 50% 38%, rgba(255,255,255,.10), rgba(255,255,255,0) 60%),
+             radial-gradient(1400px 900px at 50% 115%, rgba(30,20,160,.55), rgba(30,20,160,0) 70%)}
+.tile{border-radius:22%;background:rgba(255,255,255,.07)}
+.tile.g{background:rgba(98,194,52,.9)}
+
+/* logo */
+#logo{width:1150px;height:250px;transform-origin:0 0}
+#icon{position:absolute;left:0;top:16px;width:218px;height:218px;overflow:visible}
+#word{position:absolute;left:300px;top:0;width:850px;height:250px}
+.letter{position:absolute;top:0;height:250px;will-change:transform,opacity}
+
+/* type */
+.line{position:absolute;left:0;width:1080px;text-align:center;white-space:nowrap;will-change:transform,opacity}
+.h1{font-size:182px;font-weight:700;letter-spacing:-.035em;line-height:1}
+.h2{font-size:64px;font-weight:500;letter-spacing:-.01em;opacity:.9}
+.mask{position:absolute;left:0;width:1080px;overflow:hidden}
+.hl{position:relative;display:inline-block;padding:0 34px}
+.hl i{position:absolute;inset:14px 0 0 0;border-radius:34px;background:var(--green);transform-origin:0 50%;z-index:0}
+.hl span{position:relative;z-index:1}
+
+.pill{position:absolute;display:flex;align-items:center;gap:28px;height:150px;padding:0 54px 0 34px;border-radius:75px;
+  background:var(--white);color:var(--purple);box-shadow:0 30px 60px -20px rgba(20,10,120,.45)}
+.slot{position:relative;overflow:hidden;height:100%}
+.slot span{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap}
+.tnum{font-variant-numeric:tabular-nums}
+
+#ageCard{position:absolute;width:560px;height:560px;border-radius:120px;background:var(--white);color:var(--purple);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 40px 80px -24px rgba(20,10,120,.5)}
+#ageNum{font-size:300px;font-weight:700;letter-spacing:-.05em;line-height:.9}
+#ageLbl{font-size:56px;font-weight:600;color:var(--purple);opacity:.7;margin-top:18px}
+#ageCard .dot{position:absolute;right:46px;bottom:46px;width:62px;height:62px;border-radius:17px;background:var(--green)}
+
+#cta{position:absolute;height:150px;padding:0 70px;border-radius:75px;background:var(--white);color:var(--purple);
+  font-size:62px;font-weight:700;display:flex;align-items:center;gap:22px;box-shadow:0 30px 60px -20px rgba(20,10,120,.5)}
+#cta b{width:46px;height:46px;border-radius:12px;background:var(--green);display:inline-block}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+  <div id="glow" class="abs"></div>
+  <div id="tiles"></div>
+  <svg id="chart" class="abs" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+
+  <!-- Scene 2: headline -->
+  <div id="s2">
+    <div class="mask" style="top:560px;height:200px"><div class="line h1" id="w1" style="top:10px">Start</div></div>
+    <div class="mask" style="top:760px;height:200px"><div class="line h1" id="w2" style="top:10px">learning</div></div>
+    <div class="mask" style="top:960px;height:230px"><div class="line h1" id="w3" style="top:10px"><span class="hl"><i id="hlbg"></i><span>trading</span></span></div></div>
+  </div>
+
+  <!-- Scene 3: any time -->
+  <div id="s3">
+    <div class="mask" style="top:560px;height:220px"><div class="line h1" id="t1" style="top:10px">any time</div></div>
+    <div class="line h2" id="t2" style="top:800px">morning, lunch break or late night</div>
+    <div class="pill" id="timePill" style="left:0;top:960px">
+      <svg width="104" height="104" viewBox="0 0 104 104">
+        <circle cx="52" cy="52" r="44" fill="none" stroke="#5554F6" stroke-width="9"/>
+        <line id="hHour" x1="52" y1="52" x2="52" y2="30" stroke="#5554F6" stroke-width="9" stroke-linecap="round"/>
+        <line id="hMin" x1="52" y1="52" x2="52" y2="20" stroke="#62C234" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="52" cy="52" r="6" fill="#5554F6"/>
+      </svg>
+      <div class="slot tnum" style="width:228px;font-size:84px;font-weight:700"><span id="tA"></span><span id="tB"></span></div>
+    </div>
+  </div>
+
+  <!-- Scene 4: any age -->
+  <div id="s4">
+    <div class="mask" style="top:420px;height:220px"><div class="line h1" id="a1" style="top:10px">at any age</div></div>
+    <div id="ageCard" style="left:260px;top:720px">
+      <div id="ageNum" class="tnum">18</div>
+      <div id="ageLbl">years old</div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- Scene 5: end card -->
+  <div id="s5">
+    <div class="line h2" id="e1" style="top:1110px;font-size:76px;font-weight:600;opacity:1">Start learning trading today</div>
+    <div id="cta" style="left:0;top:1290px"><b></b>finelo.com</div>
+  </div>
+
+  <!-- logo (lives across scenes) -->
+  <div id="logo" class="abs">
+    <svg id="icon" viewBox="0 0 218 218">
+      <g id="stem"><rect x="0" y="0" width="97" height="218" rx="14" fill="#fff"/></g>
+      <g id="bar"><rect x="0" y="0" width="218" height="97" rx="14" fill="#fff"/>
+        <path d="M97 97 h14 a14 14 0 0 0 -14 14 z" fill="#fff"/></g>
+      <g id="sq"><rect x="125" y="128" width="65" height="65" rx="12" fill="#62C234"/></g>
+    </svg>
+    <div id="word">
+      <img class="letter" src="assets/letter-0.png" style="left:1px;width:138px">
+      <img class="letter" src="assets/letter-1.png" style="left:159px;width:55px">
+      <img class="letter" src="assets/letter-2.png" style="left:241px;width:153px">
+      <img class="letter" src="assets/letter-3.png" style="left:414px;width:170px">
+      <img class="letter" src="assets/letter-4.png" style="left:607px;width:46px">
+      <img class="letter" src="assets/letter-5.png" style="left:676px;width:174px">
+    </div>
+  </div>
+</div></div>
+
+<script>
+const DURATION = 13.5;
+const W = 1080, H = 1920;
+const $ = id => document.getElementById(id);
+
+// ---------- easing / timing helpers ----------
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, k) => a + (b - a) * k;
+const p = (t, a, b) => clamp((t - a) / (b - a));           // 0..1 progress of t over [a,b]
+const outCubic = k => 1 - Math.pow(1 - k, 3);
+const outQuint = k => 1 - Math.pow(1 - k, 5);
+const inCubic = k => k * k * k;
+const inOutCubic = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const outBack = (k, s = 1.7) => 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2);
+// in/out envelope: rises over [a,a+i], falls over [b-o,b]
+const env = (t, a, b, i = .4, o = .4) => Math.min(outCubic(p(t, a, a + i)), 1 - inCubic(p(t, b - o, b)));
+const set = (el, tf, op) => { el.style.transform = tf; if (op !== undefined) el.style.opacity = op; };
+
+// ---------- background tiles (brand rounded squares) ----------
+const tilesEl = $('tiles');
+const TILES = [
+  {x: 80,  y: 260,  s: 120, sp: 18, r: -8,  g: 0},
+  {x: 870, y: 420,  s: 70,  sp: 30, r: 10,  g: 1},
+  {x: 900, y: 1500, s: 160, sp: 14, r: 6,   g: 0},
+  {x: 110, y: 1620, s: 64,  sp: 26, r: -12, g: 1},
+  {x: 760, y: 120,  s: 44,  sp: 34, r: 14,  g: 0},
+  {x: 40,  y: 980,  s: 54,  sp: 22, r: 0,   g: 0},
+  {x: 980, y: 900,  s: 90,  sp: 20, r: -6,  g: 0},
+].map(d => { const e = document.createElement('div'); e.className = 'tile abs' + (d.g ? ' g' : '');
+  e.style.width = e.style.height = d.s + 'px'; tilesEl.appendChild(e); return {...d, e}; });
+
+// ---------- candlestick chart (background, scene 2 onward) ----------
+const chart = $('chart');
+const NS = 'http://www.w3.org/2000/svg';
+const CANDLES = [];
+(function buildChart() {
+  // deterministic upward-trending series
+  let v = 0; const n = 16, x0 = 70, step = 62;
+  const deltas = [.6, -.35, .9, .5, -.6, 1.1, .4, -.3, 1.2, .7, -.5, 1.3, .8, -.2, 1.4, 1.0];
+  for (let i = 0; i < n; i++) {
+    const o = v, c = v + deltas[i]; v = c;
+    const hi = Math.max(o, c) + .25 + (i % 3) * .1, lo = Math.min(o, c) - .25 - (i % 2) * .12;
+    CANDLES.push({x: x0 + i * step, o, c, hi, lo, up: c >= o});
+  }
+  const yOf = val => 1780 - val * 70;
+  CANDLES.forEach(cd => {
+    const g = document.createElementNS(NS, 'g');
+    const wick = document.createElementNS(NS, 'line');
+    wick.setAttribute('x1', cd.x); wick.setAttribute('x2', cd.x);
+    wick.setAttribute('y1', yOf(cd.hi)); wick.setAttribute('y2', yOf(cd.lo));
+    wick.setAttribute('stroke-width', 5); wick.setAttribute('stroke-linecap', 'round');
+    const body = document.createElementNS(NS, 'rect');
+    const top = yOf(Math.max(cd.o, cd.c)), bot = yOf(Math.min(cd.o, cd.c));
+    body.setAttribute('x', cd.x - 18); body.setAttribute('width', 36);
+    body.setAttribute('y', top); body.setAttribute('height', Math.max(10, bot - top)); body.setAttribute('rx', 8);
+    const col = cd.up ? '#62C234' : 'rgba(255,255,255,.55)';
+    body.setAttribute('fill', col); wick.setAttribute('stroke', col);
+    g.appendChild(wick); g.appendChild(body); chart.appendChild(g);
+    cd.g = g; cd.cy = (top + bot) / 2;
+  });
+  // trend line through closes
+  const path = document.createElementNS(NS, 'path');
+  path.setAttribute('d', CANDLES.map((cd, i) => (i ? 'L' : 'M') + cd.x + ' ' + (yOf(cd.c) - 70)).join(' '));
+  path.setAttribute('fill', 'none'); path.setAttribute('stroke', '#fff'); path.setAttribute('stroke-width', 6);
+  path.setAttribute('stroke-linecap', 'round'); path.setAttribute('stroke-linejoin', 'round');
+  path.setAttribute('opacity', .5);
+  chart.appendChild(path); chart.trend = path;
+})();
+const trendLen = () => chart.trend.getTotalLength();
+
+// ---------- scene content ----------
+const TIMES = ['06:30', '12:45', '18:20', '23:55'];
+const AGES  = [18, 27, 39, 52, 68];
+const letters = [...document.querySelectorAll('.letter')];
+
+// logo layout states. The lockup is 1150 x 250; the icon alone is 218 wide (offset 0..218).
+function logoPlace(x, y, s) { set($('logo'), `translate(${x}px,${y}px) scale(${s})`); }
+
+function render(t) {
+  t = clamp(t, 0, DURATION);
+
+  // ---- background ----
+  TILES.forEach((d, i) => {
+    const drift = Math.sin(t * .6 + i) * 14;
+    const y = d.y - t * d.sp + drift;
+    const intro = outBack(p(t, .2 + i * .06, .9 + i * .06), 1.4);
+    set(d.e, `translate(${d.x}px,${y}px) rotate(${d.r + t * (i % 2 ? 4 : -3)}deg) scale(${intro})`);
+  });
+
+  // ---- chart: grows during scene 2, then sits as a quiet backdrop ----
+  const chartOn = env(t, 2.9, 11.4, .3, .6);
+  const chartDim = lerp(1, .35, inOutCubic(p(t, 5.6, 6.3)));
+  chart.style.opacity = chartOn * chartDim;
+  CANDLES.forEach((cd, i) => {
+    const k = outBack(p(t, 3.0 + i * .06, 3.45 + i * .06), 2);
+    cd.g.setAttribute('transform', `translate(0 ${cd.cy}) scale(1 ${Math.max(0, k)}) translate(0 ${-cd.cy})`);
+    cd.g.setAttribute('opacity', clamp(k * 3));
+  });
+  const L = trendLen(); const tk = inOutCubic(p(t, 3.4, 4.8));
+  chart.trend.setAttribute('stroke-dasharray', L); chart.trend.setAttribute('stroke-dashoffset', L * (1 - tk));
+  chart.style.transform = `translateY(${-t * 6}px)`;
+
+  // ---- logo build (scene 1) ----
+  const sq = outBack(p(t, .15, .6), 2.2);
+  $('sq').setAttribute('transform', `translate(157.5 160.5) scale(${sq}) translate(-157.5 -160.5)`);
+  const stem = outQuint(p(t, .45, 1.0));
+  $('stem').setAttribute('transform', `translate(0 218) scale(1 ${stem}) translate(0 -218)`);
+  const bar = outQuint(p(t, .7, 1.25));
+  $('bar').setAttribute('transform', `scale(${bar} 1)`);
+  $('bar').style.opacity = bar > 0 ? 1 : 0;
+
+  letters.forEach((el, i) => {
+    const k = outCubic(p(t, 1.2 + i * .07, 1.7 + i * .07));
+    set(el, `translateY(${(1 - k) * 90}px)`, k);
+  });
+  $('word').style.clipPath = 'inset(-40px -40px 0 -40px)';
+
+  // Lockup position: icon centred alone -> full lockup centred -> docked on top -> end card centre
+  const S1 = .8;                                          // lockup scale in the intro
+  const iconOnlyX = (W - 218 * S1 * 1.25) / 2;            // icon a bit bigger while it builds alone
+  const lockX = (W - 1150 * S1) / 2;
+  const cy = 820;
+  let x, y, s;
+  const kSlide = inOutCubic(p(t, 1.15, 1.75));
+  x = lerp(iconOnlyX, lockX, kSlide);
+  s = lerp(S1 * 1.25, S1, kSlide);
+  y = lerp(cy - 125 * S1 * 1.25 + 16, cy - 125 * S1, kSlide);
+
+  // dock to top (2.45 -> 3.05)
+  const SD = .36, dockX = (W - 1150 * SD) / 2, dockY = 150;
+  const kDock = inOutCubic(p(t, 2.45, 3.05));
+  x = lerp(x, dockX, kDock); y = lerp(y, dockY, kDock); s = lerp(s, SD, kDock);
+
+  // back to centre for end card (10.75 -> 11.45)
+  const SE = .74, endX = (W - 1150 * SE) / 2, endY = 820;
+  const kEnd = inOutCubic(p(t, 10.75, 11.45));
+  x = lerp(x, endX, kEnd); y = lerp(y, endY, kEnd); s = lerp(s, SE, kEnd);
+  logoPlace(x, y, s);
+
+  // ---- scene 2: Start / learning / trading ----
+  const s2out = inCubic(p(t, 5.55, 5.95));
+  [['w1', 3.05], ['w2', 3.2], ['w3', 3.35]].forEach(([id, a], i) => {
+    const k = outQuint(p(t, a, a + .6));
+    const o = inCubic(p(t, 5.5 + i * .06, 5.85 + i * .06));
+    set($(id), `translateY(${(1 - k) * 230 - o * 230}px)`);
+  });
+  const hk = outQuint(p(t, 3.75, 4.25));
+  $('hlbg').style.transform = `scaleX(${hk})`;
+  $('s2').style.opacity = t < 6.2 ? 1 : 0;
+
+  // ---- scene 3: any time ----
+  const s3k = outQuint(p(t, 5.95, 6.55));
+  const s3o = inCubic(p(t, 8.3, 8.7));
+  set($('t1'), `translateY(${(1 - s3k) * 240 - s3o * 240}px)`);
+  const sub3 = env(t, 6.3, 8.6, .4, .3);
+  set($('t2'), `translateY(${(1 - outCubic(p(t, 6.3, 6.8))) * 40}px)`, sub3 * .9);
+
+  const pillIn = outBack(p(t, 6.45, 6.95), 1.6), pillOut = inCubic(p(t, 8.25, 8.6));
+  const pill = $('timePill');
+  const pw = pill.offsetWidth;
+  set(pill, `translate(${(W - pw) / 2}px,0) scale(${Math.max(0, pillIn * (1 - pillOut))})`, 1 - pillOut);
+  // time slot rolling
+  const tt = clamp((t - 6.6) / .5, 0, TIMES.length - 1);
+  const ti = Math.floor(tt), tf = outBack(clamp((tt - ti - .55) / .45), 1.3);
+  const cur = TIMES[ti], nxt = TIMES[Math.min(ti + 1, TIMES.length - 1)];
+  $('tA').textContent = cur; $('tB').textContent = nxt;
+  const roll = ti >= TIMES.length - 1 ? 0 : tf;
+  set($('tA'), `translateY(${-roll * 150}px)`); set($('tB'), `translateY(${(1 - roll) * 150}px)`);
+  // clock hands spin with the time changes
+  const hours = 6.5 + tt * 5.8;
+  $('hHour').setAttribute('transform', `rotate(${hours * 30} 52 52)`);
+  $('hMin').setAttribute('transform', `rotate(${hours * 360} 52 52)`);
+  $('s3').style.opacity = t > 5.8 && t < 8.8 ? 1 : 0;
+
+  // ---- scene 4: any age ----
+  const s4k = outQuint(p(t, 8.5, 9.1)), s4o = inCubic(p(t, 10.45, 10.85));
+  set($('a1'), `translateY(${(1 - s4k) * 240 - s4o * 240}px)`);
+  const cIn = outBack(p(t, 8.7, 9.25), 1.5), cOut = inCubic(p(t, 10.4, 10.8));
+  set($('ageCard'), `scale(${Math.max(0, cIn * (1 - cOut))}) rotate(${(1 - cIn) * -10}deg)`, 1 - cOut);
+  const at = clamp((t - 9.1) / .3, 0, AGES.length - 1);
+  const ai = Math.floor(at), af = inOutCubic(clamp((at - ai) * 1.6));
+  const age = Math.round(lerp(AGES[ai], AGES[Math.min(ai + 1, AGES.length - 1)], af));
+  $('ageNum').textContent = at >= AGES.length - 1 ? AGES[AGES.length - 1] + '+' : age;
+  const bump = 1 + .06 * Math.sin(clamp((at - ai) * 1.6) * Math.PI) * (at < AGES.length - 1 ? 1 : 0);
+  $('ageNum').style.transform = `scale(${bump})`;
+  $('s4').style.opacity = t > 8.4 && t < 10.9 ? 1 : 0;
+
+  // ---- scene 5: end card ----
+  const e1 = outCubic(p(t, 11.25, 11.75));
+  set($('e1'), `translateY(${(1 - e1) * 50}px)`, e1);
+  const ctaIn = outBack(p(t, 11.5, 12.0), 1.8);
+  const press = 1 - .06 * Math.sin(clamp((t - 12.45) / .35) * Math.PI);
+  const ctaW = $('cta').offsetWidth;
+  set($('cta'), `translate(${(W - ctaW) / 2}px,0) scale(${Math.max(0, ctaIn) * press})`, clamp(ctaIn * 2));
+}
+
+// ---------- playback ----------
+window.render = render;
+window.DURATION = DURATION;
+const params = new URLSearchParams(location.search);
+if (params.has('render')) {
+  document.body.classList.add('rendering');
+} else {
+  const fit = () => { const k = Math.min(innerWidth / W, innerHeight / H); $('wrap').style.transform = `scale(${k})`; };
+  addEventListener('resize', fit); fit();
+  let t0 = null;
+  const loop = now => { if (t0 === null) t0 = now; render(((now - t0) / 1000) % (DURATION + .8)); requestAnimationFrame(loop); };
+  document.fonts.ready.then(() => requestAnimationFrame(loop));
+}
+render(0);
+</script>
+</body>
+</html>
